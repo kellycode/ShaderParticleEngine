@@ -32,10 +32,11 @@
             <a href="./orbit.html">orbit</a>
             <a href="./pool.html">pool</a>
             <a href="./rotation.html">rotation</a>
+            <a href="./runtimeChanging.html" style="color: lightgreen;">runtimeChanging</a>
         </div>
 
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.js"></script>
-        <script type="text/javascript" src="./js/three_r110/three.min.js"></script>
+        <script type="text/javascript" src="./js/three_r120/three.min.js"></script>
         <script type="text/javascript" src="./js/Stats.min.js"></script>
         <script type="text/javascript" src="../build/SPE.min.js"></script>
 
@@ -54,7 +55,7 @@
                         // frameCount: 8,
                         loop: 2
                     },
-
+                    maxParticleCount: 8000,
                     depthTest: true,
                     scale: window.innerHeight / 2.0
                 } ),

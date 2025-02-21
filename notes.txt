@@ -1,0 +1,13 @@
+three.min.js:92 THREE.WebGLProgram: gl.getProgramInfoLog() C:\fakepath(87,1-6): warning X4000: use of potentially uninitialized variable (dyn_index_vec4_float4_int)
+
+
+Moving from r84 to r120 of Three.js is quite a jump - that's good that you've only encountered minor issues so far. The main attribute change you probably hit was the switch from `.attributes` to `.getAttribute()`, which was one of the bigger breaking changes in that period.
+
+Since you're doing such a significant version upgrade, you might want to watch out for a few other potential issues that could come up, particularly with shaders:
+
+1. Shader precision defaults changed
+2. Some uniform naming conventions were updated
+3. The WebGLRenderer parameters changed somewhat
+4. Material property naming evolved in some cases
+
+Would you like me to keep an eye out for any other version-specific changes as we discuss your Three.js implementation? I can flag anything that might need attention during the upgrade process.
