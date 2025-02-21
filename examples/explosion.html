@@ -6,7 +6,7 @@
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 	</head>
 	<body>
-		<script type="text/javascript" src="./js/THREE-r84.js"></script>
+		<script type="text/javascript" src="./js/three_r100/three.min.js"></script>
 		<script type="text/javascript" src="./js/Stats.min.js"></script>
 	    <script type="text/javascript" src="../build/SPE.min.js"></script>
 
@@ -41,7 +41,7 @@
 			clock.getDelta();
 			var group = new SPE.Group( {
 					texture: {
-						value: THREE.ImageUtils.loadTexture( './img/sprite-explosion2.png' ),
+						value: THREE.TextureLoader().load( './img/sprite-explosion2.png' ),
 						frames: new THREE.Vector2( 5, 5 ),
 						loop: 1
 					},
@@ -52,7 +52,7 @@
 				} ),
 				shockwaveGroup = new SPE.Group( {
 					texture: {
-						value: THREE.ImageUtils.loadTexture( './img/smokeparticle.png' ),
+						value: THREE.TextureLoader().load( './img/smokeparticle.png' ),
 					},
 					depthTest: false,
 					depthWrite: true,

@@ -2,6 +2,7 @@ module.exports = function( grunt ) {
     'use strict';
 
     var packageJSON = grunt.file.readJSON( 'package.json' );
+    var addHeader = 'import * as THREE from "three";';
 
     var licenseBanner =
         '/* ' + packageJSON.name + ' ' + packageJSON.version + '\n' +
@@ -37,7 +38,7 @@ module.exports = function( grunt ) {
                 },
                 banner: licenseBanner,
                 report: 'min',
-                maxLineLen: 1000,
+                maxLineLen: 1000
             },
             files: {}
         }
@@ -54,38 +55,17 @@ module.exports = function( grunt ) {
             options: {
                 separator: '\n\n',
                 banner: licenseBanner,
+                footer: '\n// export default SPE;'
             },
             dist: {
                 src: files,
                 dest: outputPath,
             },
-        },
-
-        jsdoc: {
-            dist: {
-                src: 'src/**/*.js',
-                options: {
-                    destination: 'docs/api'
-                }
-            }
-        },
-
-        docco: {
-            options: {
-                dst: 'docs/source/',
-                layout: 'parallel'
-            },
-            docs: {
-                src: 'build/SPE.js'
-            }
         }
     } );
 
     grunt.loadNpmTasks( 'grunt-contrib-concat' );
     grunt.loadNpmTasks( 'grunt-contrib-uglify' );
-    grunt.loadNpmTasks( 'grunt-jsdoc' );
-    grunt.loadNpmTasks( 'grunt-docco2' );
 
     grunt.registerTask( 'default', [ 'concat', 'uglify' ] );
-    grunt.registerTask( 'docs', [ 'jsdoc', 'docco' ] );
 };

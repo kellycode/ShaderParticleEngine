@@ -18,7 +18,7 @@
     </head>
     <body>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.js"></script>
-        <script type="text/javascript" src="./js/THREE-r84.js"></script>
+        <script type="text/javascript" src="./js/three_r100/three.min.js"></script>
         <script type="text/javascript" src="./js/Stats.min.js"></script>
         <script type="text/javascript" src="../build/SPE.min.js"></script>
 
@@ -32,7 +32,7 @@
                 group = new SPE.Group( {
                     // Possible API for animated textures...
                     texture: {
-                        value: THREE.ImageUtils.loadTexture( './img/sprite-flame2.jpg' ),
+                        value: THREE.TextureLoader().load( './img/sprite-flame2.jpg' ),
                         frames: new THREE.Vector2( 8, 4 ),
                         // frameCount: 8,
                         loop: 2

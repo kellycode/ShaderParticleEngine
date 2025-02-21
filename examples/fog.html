@@ -7,7 +7,7 @@
 <body>
     <p class="numParticles"></p>
 
-    <script type="text/javascript" src="./js/THREE-r84.js"></script>
+    <script type="text/javascript" src="./js/three_r100/three.min.js"></script>
     <script type="text/javascript" src="./js/Stats.min.js"></script>
     <script type="text/javascript" src="../build/SPE.min.js"></script>
 
@@ -53,9 +53,10 @@
         function initParticles() {
             particleGroup = new SPE.Group({
                 texture: {
-                    value: THREE.ImageUtils.loadTexture('./img/smokeparticle.png')
+                    value: THREE.TextureLoader().load('./img/smokeparticle.png')
                 },
-                fog: true
+                fog: true,
+                maxParticleCount: 3000
             });
 
             emitter = new SPE.Emitter({

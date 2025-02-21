@@ -51,7 +51,7 @@ The `texture` property of `SPE.Group` is in a slightly different format, but now
 ```javascript
 var group = new SPE.Group( {
 	texture: {
-		value: THREE.ImageUtils.loadTexture( ... ),
+		value: THREE.TextureLoader().load( ... ),
 		frames: new THREE.Vector2( 4, 4 ), // Optional. No. frames on x/y axis of texture
 		frameCount: 16, // Optional. If whole texture isn't used, specify the total number of frames the texture has here
 		loop: 2, // Optional. The number of loops the spritesheet should perform during a particle's lifetime.

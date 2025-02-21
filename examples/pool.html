@@ -7,7 +7,7 @@
 <body>
 	<p class="numParticles">Click mouse or press any key to trigger an explosion.</p>
 
-    <script type="text/javascript" src="./js/THREE-r84.js"></script>
+    <script type="text/javascript" src="./js/three_r100/three.min.js"></script>
     <script type="text/javascript" src="./js/Stats.min.js"></script>
     <script type="text/javascript" src="../build/SPE.min.js"></script>
 
@@ -81,9 +81,10 @@
         function initParticles() {
         	particleGroup = new SPE.Group({
         		texture: {
-                    value: THREE.ImageUtils.loadTexture('./img/smokeparticle.png')
+                    value: THREE.TextureLoader().load('./img/smokeparticle.png')
                 },
-                blending: THREE.AdditiveBlending
+                blending: THREE.AdditiveBlending,
+                maxParticleCount: 3000
         	});
 
             particleGroup.addPool( 10, emitterSettings, false );

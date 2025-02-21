@@ -1,4 +1,4 @@
-/* shader-particle-engine 1.0.6
+/* shader-particle-engine 1.1.0
  * 
  * (c) 2015 Luke Moody (http://www.github.com/squarefeet)
  *     Originally based on Lee Stemkoski's original work (https://github.com/stemkoski/stemkoski.github.com/blob/master/Three.js/js/ParticleEngine.js).
@@ -528,8 +528,6 @@ SPE.ShaderAttribute.prototype.flagUpdate = function() {
 
 	range.offset = this.updateMin;
 	range.count = Math.min( ( this.updateMax - this.updateMin ) + this.componentSize, this.typedArray.array.length );
-	// console.log( range.offset, range.count, this.typedArray.array.length );
-	// console.log( 'flagUpdate:', range.offset, range.count );
 	attr.needsUpdate = true;
 };
 
@@ -573,10 +571,6 @@ SPE.ShaderAttribute.prototype.forceUpdateAll = function() {
 	this.bufferAttribute.array = this.typedArray.array;
 	this.bufferAttribute.updateRange.offset = 0;
 	this.bufferAttribute.updateRange.count = -1;
-	// this.bufferAttribute.dynamic = false;
-	// this.bufferAttribute.usage = this.dynamicBuffer ?
-	// 	THREE.DynamicDrawUsage :
-	// 	THREE.StaticDrawUsage;
 
 	this.bufferAttribute.usage = THREE.StaticDrawUsage;
 	this.bufferAttribute.needsUpdate = true;
@@ -647,7 +641,7 @@ SPE.ShaderAttribute.prototype._createBufferAttribute = function( size ) {
 	}
 
 	this.bufferAttribute = new THREE.BufferAttribute( this.typedArray.array, this.componentSize );
-	// this.bufferAttribute.dynamic = this.dynamicBuffer;
+
 	this.bufferAttribute.usage = this.dynamicBuffer ?
 		THREE.DynamicDrawUsage :
 		THREE.StaticDrawUsage;
@@ -3596,3 +3590,5 @@ SPE.Emitter.prototype.remove = function() {
 
     return this;
 };
+
+// Last line appended
