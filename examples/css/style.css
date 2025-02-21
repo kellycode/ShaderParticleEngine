@@ -1,6 +1,6 @@
 * {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 body {
@@ -18,12 +18,58 @@ p.small {
     font-size: 0.8em;
 }
 
+.link_man {
+    position: absolute;
+    left: 0px;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    background-color: black;
+    padding: 15px;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.link_man h4 {
+    padding-left: 6px;
+}
+
+.link_man a {
+    display: block;
+    margin: 6px;
+}
+
+a:link {
+    color: lightblue; /* Default color for unvisited links */
+    text-decoration: none; /* Remove underline */
+}
+
+a:visited {
+    color: lightblue; /* Change visited links to blue */
+    text-decoration: none; /* Remove underline */
+}
+
+a:hover {
+    color: lightgreen; /* Change color on hover */
+    text-decoration: none; /* Remove underline */
+}
+
+a:focus {
+    color: yellow; /* Change color on focus */
+    text-decoration: none; /* Remove underline */
+}
+
+a:active {
+    color: lightgreen; /* Change color on click */
+    text-decoration: none; /* Remove underline */
+}
+
 .numParticles {
-	position: absolute;
-	bottom: 10px;
-	left: 10px;
-	color: white;
-	text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    color: white;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
 }
 
 .alive-wrapper {
@@ -34,9 +80,9 @@ p.small {
     margin-left: -12.5em;
     text-align: center;
     padding: 1em;
-    background-color: rgba( 255, 255, 255, 0.15 );
+    background-color: rgba(255, 255, 255, 0.15);
     border-radius: 1em;
-    border: 1px solid rgba( 255, 255, 255, 0.3 );
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 #stats {

@@ -15,10 +15,27 @@
                 z-index: 2;
             }
         </style>
+        <link rel="stylesheet" type="text/css" href="./css/style.css">
     </head>
     <body>
+        <div class="link_man">
+            <h4>Examples</h4>
+            <a href="./activeMultiplier.html">activeMultiplier</a>
+            <a href="./basic.html">basic</a>
+            <a href="./clock.html">clock</a>
+            <a href="./clouds.html">clouds</a>
+            <a href="./distributions.html">distributions</a>
+            <a href="./explosion.html">explosion</a>
+            <a href="./fog.html">fog</a>
+            <a href="./mouseFollow.html">mouseFollow</a>
+            <a href="./multipleEmitters.html">multipleEmitters</a>
+            <a href="./orbit.html">orbit</a>
+            <a href="./pool.html">pool</a>
+            <a href="./rotation.html">rotation</a>
+        </div>
+
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.js"></script>
-        <script type="text/javascript" src="./js/three_r100/three.min.js"></script>
+        <script type="text/javascript" src="./js/three_r110/three.min.js"></script>
         <script type="text/javascript" src="./js/Stats.min.js"></script>
         <script type="text/javascript" src="../build/SPE.min.js"></script>
 
@@ -32,7 +49,7 @@
                 group = new SPE.Group( {
                     // Possible API for animated textures...
                     texture: {
-                        value: THREE.TextureLoader().load( './img/sprite-flame2.jpg' ),
+                        value: new THREE.TextureLoader().load( './img/sprite-flame2.jpg' ),
                         frames: new THREE.Vector2( 8, 4 ),
                         // frameCount: 8,
                         loop: 2
