@@ -3591,4 +3591,4 @@ SPE.Emitter.prototype.remove = function() {
     return this;
 };
 
-// Last line appended
+// export default SPE;
