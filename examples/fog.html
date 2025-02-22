@@ -24,52 +24,41 @@
             <a href="./runtimeChanging.html">runtimeChanging</a>
         </div>
 
-        <script src="./js/three_r120/three.js"></script>
+        <script src="./js/three_r140/three.js"></script>
         <script src="./js/Stats.min.js"></script>
         <script src="../build/SPE.js"></script>
-        <script src="./js/safeLoader.js"></script>
+        <script src="./js/basicScene.js"></script>
 
         <script type="text/javascript">
             // variables used in init()
-            var scene, camera, renderer, stats, stats2, clock;
+            let speScene = new BasicScene(64);
+
 
             // Used in initParticles()
-            var emitter, particleGroup;
+            let emitter, particleGroup;
 
             let allIn = function (loaded) {
                 initExample(loaded);
             };
-            safeLoad(["./img/smokeparticle.png"], allIn);
+            speScene.safeLoad(["./img/smokeparticle.png"], allIn);
 
             function initExample(textures) {
                 // Setup the scene
                 function init() {
-                    scene = new THREE.Scene();
-                    scene.fog = new THREE.Fog(0x000000, 40, 70);
+                    speScene.scene.fog = new THREE.Fog(0x000000, 40, 70);
                     // scene.fog = new THREE.FogExp2( 0x000000, 0.025 );
 
-                    camera = new THREE.PerspectiveCamera(64, window.innerWidth / window.innerHeight, 0.1, 10000);
-                    camera.position.z = 50;
-                    camera.lookAt(scene.position);
+                    speScene.camera.position.z = 50;
+                    speScene.camera.lookAt(speScene.scene.position);
 
-                    renderer = new THREE.WebGLRenderer();
-                    renderer.setSize(window.innerWidth, window.innerHeight);
-                    renderer.setClearColor(scene.fog.color);
+                    speScene.renderer.setSize(window.innerWidth, window.innerHeight);
+                    speScene.renderer.setClearColor(speScene.scene.fog.color);
 
-                    stats = new Stats();
-                    clock = new THREE.Clock();
-
-                    stats.domElement.style.position = "absolute";
-                    stats.domElement.style.top = "0";
-
-                    var box = new THREE.Mesh(
+                    let box = new THREE.Mesh(
                         new THREE.BoxGeometry(20, 20, 20),
                         new THREE.MeshBasicMaterial({ wireframe: true, color: 0xffffff })
                     );
-                    scene.add(box);
-
-                    document.body.appendChild(renderer.domElement);
-                    document.body.appendChild(stats.domElement);
+                    speScene.scene.add(box);
                 }
 
                 // Create particle group and emitter
@@ -94,42 +83,28 @@
                     });
 
                     particleGroup.addEmitter(emitter);
-                    scene.add(particleGroup.mesh);
+                    speScene.scene.add(particleGroup.mesh);
 
                     document.querySelector(".numParticles").textContent = "Total particles: " + emitter.particleCount;
                 }
 
                 function animate() {
-                    var now = Date.now() * 0.0005;
+                    let now = Date.now() * 0.0005;
                     requestAnimationFrame(animate);
 
-                    camera.position.x = Math.cos(now) * 50;
-                    camera.position.y = Math.sin(now) * 45;
-                    camera.position.z = Math.sin(now) * 50;
-                    camera.lookAt(scene.position);
+                    speScene.camera.position.x = Math.cos(now) * 50;
+                    speScene.camera.position.y = Math.sin(now) * 45;
+                    speScene.camera.position.z = Math.sin(now) * 50;
+                    speScene.camera.lookAt(speScene.scene.position);
 
-                    render(clock.getDelta());
-                    stats.update();
+                    render(speScene.clock.getDelta());
+                    speScene.stats.update();
                 }
 
                 function render(dt) {
                     particleGroup.tick(dt);
-                    renderer.render(scene, camera);
+                    speScene.render();
                 }
-
-                window.addEventListener(
-                    "resize",
-                    function () {
-                        var w = window.innerWidth,
-                            h = window.innerHeight;
-
-                        camera.aspect = w / h;
-                        camera.updateProjectionMatrix();
-
-                        renderer.setSize(w, h);
-                    },
-                    false
-                );
 
                 init();
                 initParticles();

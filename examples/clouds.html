@@ -24,44 +24,33 @@
             <a href="./runtimeChanging.html">runtimeChanging</a>
         </div>
 
-        <script src="./js/three_r120/three.js"></script>
+        <script src="./js/three_r140/three.js"></script>
         <script src="./js/Stats.min.js"></script>
         <script src="../build/SPE.js"></script>
-        <script src="./js/safeLoader.js"></script>
+        <script src="./js/basicScene.js"></script>
         
 
         <script type="text/javascript">
             // variables used in init()
-            var scene, camera, renderer, stats, stats2, clock;
+            let speScene = new BasicScene(75);
 
             // Used in initParticles()
-            var emitter, particleGroup;
+            let emitter, particleGroup;
 
             let allIn = function (loaded) {
                 initExample(loaded);
             };
-            safeLoad(["./img/cloud.png"], allIn);
+            speScene.safeLoad(["./img/cloud.png"], allIn);
 
             function initExample(textures) {
                 // Setup the scene
                 function init() {
-                    scene = new THREE.Scene();
-                    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
 
-                    renderer = new THREE.WebGLRenderer();
-                    renderer.setSize(window.innerWidth, window.innerHeight);
-                    renderer.setClearColor(0x42c7ff);
+                    speScene.renderer.setSize(window.innerWidth, window.innerHeight);
+                    speScene.renderer.setClearColor(0x42c7ff);
 
-                    stats = new Stats();
-                    clock = new THREE.Clock();
-
-                    stats.domElement.style.position = "absolute";
-                    stats.domElement.style.top = "0";
-
-                    scene.fog = new THREE.Fog(renderer.getClearColor(), 20, 0);
-
-                    document.body.appendChild(renderer.domElement);
-                    document.body.appendChild(stats.domElement);
+                    let color = new THREE.Color();
+                    speScene.scene.fog = new THREE.Fog(speScene.renderer.getClearColor(color), 20, 0);
                 }
 
                 // Create particle group and emitter
@@ -107,35 +96,21 @@
                     });
 
                     particleGroup.addEmitter(emitter);
-                    scene.add(particleGroup.mesh);
+                    speScene.scene.add(particleGroup.mesh);
 
                     document.querySelector(".numParticles").textContent = "Total particles: " + emitter.particleCount;
                 }
 
                 function animate() {
                     requestAnimationFrame(animate);
-                    render(clock.getDelta());
-                    stats.update();
+                    render(speScene.clock.getDelta());
+                    speScene.stats.update();
                 }
 
                 function render(dt) {
                     particleGroup.tick(dt);
-                    renderer.render(scene, camera);
+                    speScene.render();
                 }
-
-                window.addEventListener(
-                    "resize",
-                    function () {
-                        var w = window.innerWidth,
-                            h = window.innerHeight;
-
-                        camera.aspect = w / h;
-                        camera.updateProjectionMatrix();
-
-                        renderer.setSize(w, h);
-                    },
-                    false
-                );
 
                 init();
                 initParticles();

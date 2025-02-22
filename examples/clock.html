@@ -23,20 +23,21 @@
             <a href="./runtimeChanging.html">runtimeChanging</a>
         </div>
 
-        <script src="./js/three_r120/three.js"></script>
+        <script src="./js/three_r140/three.js"></script>
         <script src="./js/Stats.min.js"></script>
         <script src="../build/SPE.js"></script>
         <script src="./js/basicScene.js"></script>
-		<script src="./js/safeLoader.js"></script>
 
         <script type="text/javascript">
             // for basicScene.js
-            var group;
+            let group;
+            let fixedTimeStep = false;
+            let speScene = new BasicScene(64);
 
-			let allIn = function(loaded) {
-				initExample(loaded);
-			}
-            safeLoad(["./img/smokeparticle.png"], allIn)
+            let allIn = function (loaded) {
+                initExample(loaded);
+            };
+            speScene.safeLoad(["./img/smokeparticle.png"], allIn);
 
             function initExample(textures) {
                 (group = new SPE.Group({
@@ -124,14 +125,11 @@
                 group.addEmitter(secondHand);
                 group.addEmitter(minuteHand);
                 group.addEmitter(hourHand);
-                scene.add(group.mesh);
 
-                camera.position.z = 40;
-                camera.lookAt(scene.position);
-
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                document.body.appendChild(renderer.domElement);
-                document.body.appendChild(stats.domElement);
+                speScene.scene.add(group.mesh);
+                speScene.camera.position.z = 40;
+                speScene.camera.lookAt(speScene.scene.position);
+                speScene.renderer.setSize(window.innerWidth, window.innerHeight);
 
                 var date = new Date(Date.now());
 
@@ -146,6 +144,8 @@
                 }
 
                 function onAnimate() {
+                    group.tick(!fixedTimeStep ? speScene.clock.getDelta() : undefined);
+
                     date.setTime(Date.now());
 
                     var seconds = date.getSeconds(),
@@ -167,6 +167,16 @@
                     if (hourAngle !== hourHand.rotation.angle) {
                         hourHand.rotation.angle = hourAngle;
                     }
+                }
+
+                function animate() {
+                    requestAnimationFrame(animate);
+                    speScene.stats.update();
+
+                    if (typeof onAnimate === "function") {
+                        onAnimate();
+                    }
+                    speScene.render();
                 }
 
                 fixedTimeStep = true;

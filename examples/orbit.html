@@ -21,43 +21,30 @@
             <a href="./runtimeChanging.html">runtimeChanging</a>
         </div>
 
-        <script src="./js/three_r120/three.js"></script>
+        <script src="./js/three_r140/three.js"></script>
         <script src="./js/Stats.min.js"></script>
         <script src="../build/SPE.js"></script>
-        <script src="./js/safeLoader.js"></script>
+        <script src="./js/basicScene.js"></script>
 
         <script type="text/javascript">
             // variables used in init()
-            var scene, camera, renderer, stats, stats2, clock;
-
+            let speScene = new BasicScene(75);
             // Used in initParticles()
-            var particleGroup;
+            let particleGroup;
 
             let allIn = function (loaded) {
                 initExample(loaded);
             };
-            safeLoad(["./img/smokeparticle.png"], allIn);
+            speScene.safeLoad(["./img/smokeparticle.png"], allIn);
 
             function initExample(textures) {
                 // Setup the scene
                 function init() {
-                    scene = new THREE.Scene();
-                    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
-                    camera.position.z = 50;
-                    camera.lookAt(scene.position);
+                    speScene.camera.position.z = 50;
+                    speScene.camera.lookAt(speScene.scene.position);
 
-                    renderer = new THREE.WebGLRenderer();
-                    renderer.setSize(window.innerWidth, window.innerHeight);
-                    renderer.setClearColor(0x000000);
-
-                    stats = new Stats();
-                    clock = new THREE.Clock();
-
-                    stats.domElement.style.position = "absolute";
-                    stats.domElement.style.top = "0";
-
-                    document.body.appendChild(renderer.domElement);
-                    document.body.appendChild(stats.domElement);
+                    speScene.renderer.setSize(window.innerWidth, window.innerHeight);
+                    speScene.renderer.setClearColor(0x000000);
                 }
 
                 // Create particle group and emitter
@@ -70,7 +57,7 @@
                     });
 
                     // General distributions.
-                    var emitter = new SPE.Emitter({
+                    let emitter = new SPE.Emitter({
                         maxAge: {
                             value: 5,
                         },
@@ -105,34 +92,20 @@
 
                     particleGroup.addEmitter(emitter);
 
-                    scene.add(particleGroup.mesh);
+                    speScene.scene.add(particleGroup.mesh);
                 }
 
                 function animate() {
                     requestAnimationFrame(animate);
 
-                    render(clock.getDelta());
-                    stats.update();
+                    render(speScene.clock.getDelta());
+                    speScene.stats.update();
                 }
 
                 function render(dt) {
                     particleGroup.tick(dt);
-                    renderer.render(scene, camera);
+                    speScene.render();
                 }
-
-                window.addEventListener(
-                    "resize",
-                    function () {
-                        var w = window.innerWidth,
-                            h = window.innerHeight;
-
-                        camera.aspect = w / h;
-                        camera.updateProjectionMatrix();
-
-                        renderer.setSize(w, h);
-                    },
-                    false
-                );
 
                 init();
                 initParticles();

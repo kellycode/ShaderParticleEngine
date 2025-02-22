@@ -23,29 +23,24 @@
             <a href="./runtimeChanging.html">runtimeChanging</a>
         </div>
 
-        <script src="./js/three_r120/three.js"></script>
+        <script src="./js/three_r140/three.js"></script>
         <script src="./js/Stats.min.js"></script>
         <script src="../build/SPE.js"></script>
-        <script src="./js/safeLoader.js"></script>
+        <script src="./js/basicScene.js"></script>
 
         <script type="text/javascript">
+            let speScene = new BasicScene(64);
+
             let allIn = function (loaded) {
                 initExample(loaded);
             };
-            safeLoad(["./img/sprite-explosion2.png", "./img/smokeparticle.png"], allIn);
+            speScene.safeLoad(["./img/sprite-explosion2.png", "./img/smokeparticle.png"], allIn);
 
             function initExample(textures) {
-                var scene = new THREE.Scene(),
-                    camera = new THREE.PerspectiveCamera(64, window.innerWidth / window.innerHeight, 0.1, 10000),
-                    renderer = new THREE.WebGLRenderer({
-                        antialias: true,
-                    }),
-                    stats = new Stats(),
-                    clock = new THREE.Clock();
 
                 function animate() {
                     requestAnimationFrame(animate);
-                    stats.update();
+                    speScene.stats.update();
 
                     if (typeof onAnimate === "function") {
                         onAnimate();
@@ -55,13 +50,13 @@
                 }
 
                 function render() {
-                    var dt = clock.getDelta();
+                    var dt = speScene.clock.getDelta();
                     group.tick();
                     shockwaveGroup.tick();
-                    renderer.render(scene, camera);
+                    speScene.render();
                 }
 
-                clock.getDelta();
+                speScene.clock.getDelta();
                 var group = new SPE.Group({
                         texture: {
                             value: textures["./img/sprite-explosion2.png"],
@@ -196,12 +191,13 @@
 
                 group.addEmitter(fireball).addEmitter(flash);
                 shockwaveGroup.addEmitter(debris).addEmitter(mist);
-                scene.add(shockwaveGroup.mesh);
-                scene.add(group.mesh);
 
-                camera.position.y = 40;
-                camera.position.z = 100;
-                camera.lookAt(scene.position);
+                speScene.scene.add(shockwaveGroup.mesh);
+                speScene.scene.add(group.mesh);
+
+                speScene.camera.position.y = 40;
+                speScene.camera.position.z = 100;
+                speScene.camera.lookAt(speScene.scene.position);
 
                 var floor = new THREE.Mesh(
                     new THREE.PlaneGeometry(1000, 1000, 1, 1),
@@ -212,24 +208,22 @@
 
                 floor.position.y = -10;
                 floor.rotation.x = Math.PI * -0.5;
-                scene.add(floor);
+                speScene.scene.add(floor);
 
                 var light = new THREE.PointLight(0xffffff, 1, 100);
                 light.position.set(0, 20, 0);
-                scene.add(light);
+                speScene.scene.add(light);
 
                 // renderer.setClearColor( 0x333333, 1 );
 
                 function onAnimate() {
                     var now = Date.now() * 0.001;
-                    camera.position.x = Math.sin(now) * 100;
-                    camera.position.z = Math.cos(now) * 100;
-                    camera.lookAt(scene.position);
+                    speScene.camera.position.x = Math.sin(now) * 100;
+                    speScene.camera.position.z = Math.cos(now) * 100;
+                    speScene.camera.lookAt(speScene.scene.position);
                 }
 
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                document.body.appendChild(renderer.domElement);
-                document.body.appendChild(stats.domElement);
+                speScene.renderer.setSize(window.innerWidth, window.innerHeight);
 
                 animate();
                 //setTimeout(animate, 0);

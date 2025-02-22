@@ -24,45 +24,33 @@
             <a href="./runtimeChanging.html">runtimeChanging</a>
         </div>
 
-        <script src="./js/three_r120/three.js"></script>
+        <script src="./js/three_r140/three.js"></script>
         <script src="./js/Stats.min.js"></script>
         <script src="../build/SPE.js"></script>
-        <script src="./js/safeLoader.js"></script>
+        <script src="./js/basicScene.js"></script>
 
         <script type="text/javascript">
             // variables used in init()
-            var scene, camera, renderer, stats, stats2, clock;
+            let speScene = new BasicScene(75);
 
             // Used in initParticles()
-            var emitter,
+            let emitter,
                 particleGroup,
                 numEmitters = 120;
 
             let allIn = function (loaded) {
                 initExample(loaded);
             };
-            safeLoad(["./img/smokeparticle.png"], allIn);
+            speScene.safeLoad(["./img/smokeparticle.png"], allIn);
 
             function initExample(textures) {
                 // Setup the scene
                 function init() {
-                    scene = new THREE.Scene();
-                    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
-                    camera.position.z = 200;
-                    camera.lookAt(scene.position);
+                    speScene.camera.position.z = 200;
+                    speScene.camera.lookAt(speScene.scene.position);
 
-                    renderer = new THREE.WebGLRenderer();
-                    renderer.setSize(window.innerWidth, window.innerHeight);
-                    renderer.setClearColor(0x000000);
-
-                    stats = new Stats();
-                    clock = new THREE.Clock();
-
-                    stats.domElement.style.position = "absolute";
-                    stats.domElement.style.top = "0";
-
-                    document.body.appendChild(renderer.domElement);
-                    document.body.appendChild(stats.domElement);
+                    speScene.renderer.setSize(window.innerWidth, window.innerHeight);
+                    speScene.renderer.setClearColor(0x000000);
                 }
 
                 function getRandomNumber(base) {
@@ -70,7 +58,7 @@
                 }
 
                 function getRandomColor() {
-                    var c = new THREE.Color();
+                    let c = new THREE.Color();
                     c.setRGB(Math.random(), Math.random(), Math.random());
                     return c;
                 }
@@ -84,7 +72,7 @@
                         maxParticleCount: 20000,
                     });
 
-                    for (var i = 0; i < numEmitters; ++i) {
+                    for (let i = 0; i < numEmitters; ++i) {
                         emitter = new SPE.Emitter({
                             maxAge: 5,
                             type: (Math.random() * 4) | 0,
@@ -137,7 +125,7 @@
                         particleGroup.addEmitter(emitter);
                     }
 
-                    scene.add(particleGroup.mesh);
+                    speScene.scene.add(particleGroup.mesh);
 
                     document.querySelector(".numParticles").textContent =
                         "Total particles: " + particleGroup.particleCount;
@@ -147,36 +135,22 @@
                     requestAnimationFrame(animate);
 
                     // Using a fixed time-step here to avoid pauses
-                    render(clock.getDelta());
-                    stats.update();
+                    render(speScene.clock.getDelta());
+                    speScene.stats.update();
                 }
 
                 function updateCamera() {
-                    var now = Date.now() * 0.0005;
-                    camera.position.x = Math.sin(now) * 500;
-                    camera.position.z = Math.cos(now) * 500;
-                    camera.lookAt(scene.position);
+                    let now = Date.now() * 0.0005;
+                    speScene.camera.position.x = Math.sin(now) * 500;
+                    speScene.camera.position.z = Math.cos(now) * 500;
+                    speScene.camera.lookAt(speScene.scene.position);
                 }
 
                 function render(dt) {
                     particleGroup.tick(dt);
                     updateCamera();
-                    renderer.render(scene, camera);
+                    speScene.render();
                 }
-
-                window.addEventListener(
-                    "resize",
-                    function () {
-                        var w = window.innerWidth,
-                            h = window.innerHeight;
-
-                        camera.aspect = w / h;
-                        camera.updateProjectionMatrix();
-
-                        renderer.setSize(w, h);
-                    },
-                    false
-                );
 
                 init();
                 initParticles();

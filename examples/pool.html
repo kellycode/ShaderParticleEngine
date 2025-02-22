@@ -24,23 +24,22 @@
             <a href="./runtimeChanging.html">runtimeChanging</a>
         </div>
 
-        <script src="./js/three_r120/three.js"></script>
+        <script src="./js/three_r140/three.js"></script>
         <script src="./js/Stats.min.js"></script>
         <script src="../build/SPE.js"></script>
-        <script src="./js/safeLoader.js"></script>
+        <script src="./js/basicScene.js"></script>
 
         <script type="text/javascript">
-            // variables used in init()
-            var scene, camera, renderer, stats, stats2, clock;
+            let speScene = new BasicScene(75);
 
             let allIn = function (loaded) {
                 initExample(loaded);
             };
-            safeLoad(["./img/smokeparticle.png"], allIn);
+            speScene.safeLoad(["./img/smokeparticle.png"], allIn);
 
             function initExample(textures) {
                 // Used in initParticles()
-                var emitter,
+                let emitter,
                     particleGroup,
                     pool,
                     pos = new THREE.Vector3(),
@@ -72,12 +71,10 @@
 
                 // Setup the scene
                 function init() {
-                    scene = new THREE.Scene();
-                    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
-                    camera.position.z = 200;
-                    camera.lookAt(scene.position);
+                    speScene.camera.position.z = 200;
+                    speScene.camera.lookAt(speScene.scene.position);
 
-                    var referenceCube = new THREE.Mesh(
+                    let referenceCube = new THREE.Mesh(
                         new THREE.BoxGeometry(300, 300, 300),
                         new THREE.MeshBasicMaterial({
                             wireframe: true,
@@ -86,20 +83,10 @@
                             color: 0xffffff,
                         })
                     );
-                    scene.add(referenceCube);
+                    speScene.scene.add(referenceCube);
 
-                    renderer = new THREE.WebGLRenderer();
-                    renderer.setSize(window.innerWidth, window.innerHeight);
-                    renderer.setClearColor(0x000000);
-
-                    stats = new Stats();
-                    clock = new THREE.Clock();
-
-                    stats.domElement.style.position = "absolute";
-                    stats.domElement.style.top = "0";
-
-                    document.body.appendChild(renderer.domElement);
-                    document.body.appendChild(stats.domElement);
+                    speScene.renderer.setSize(window.innerWidth, window.innerHeight);
+                    speScene.renderer.setClearColor(0x000000);
                 }
 
                 // Create particle group and emitter
@@ -115,7 +102,7 @@
                     particleGroup.addPool(10, emitterSettings, false);
 
                     // Add particle group to scene.
-                    scene.add(particleGroup.mesh);
+                    speScene.scene.add(particleGroup.mesh);
                 }
 
                 // Generate a random number between -size/2 and +size/2
@@ -125,27 +112,27 @@
 
                 // Trigger an explosion and random co-ords.
                 function createExplosion() {
-                    var num = 150;
+                    let num = 150;
                     particleGroup.triggerPoolEmitter(1, pos.set(rand(num), rand(num), rand(num)));
                 }
 
                 function animate() {
                     requestAnimationFrame(animate);
-                    render(clock.getDelta());
-                    stats.update();
+                    render(speScene.clock.getDelta());
+                    speScene.stats.update();
                 }
 
                 function updateCamera() {
-                    var now = Date.now() * 0.0007;
+                    let now = Date.now() * 0.0007;
 
-                    camera.position.set(Math.sin(now) * 500, 0, Math.cos(now) * 500);
-                    camera.lookAt(scene.position);
+                    speScene.camera.position.set(Math.sin(now) * 500, 0, Math.cos(now) * 500);
+                    speScene.camera.lookAt(speScene.scene.position);
                 }
 
                 function render(dt) {
                     particleGroup.tick(dt);
                     updateCamera();
-                    renderer.render(scene, camera);
+                    speScene.render();
                 }
 
                 // Add a mousedown listener. When mouse is clicked, a new explosion will be created.
@@ -153,21 +140,6 @@
 
                 // Do the same for a keydown event
                 document.addEventListener("keydown", createExplosion, false);
-
-                // Resize listener...
-                window.addEventListener(
-                    "resize",
-                    function () {
-                        var w = window.innerWidth,
-                            h = window.innerHeight;
-
-                        camera.aspect = w / h;
-                        camera.updateProjectionMatrix();
-
-                        renderer.setSize(w, h);
-                    },
-                    false
-                );
 
                 // Kick it all off.
                 init();
