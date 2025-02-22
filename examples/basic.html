@@ -23,10 +23,10 @@
             <a href="./runtimeChanging.html">runtimeChanging</a>
         </div>
 
-        <script type="text/javascript" src="./js/three_r120/three.min.js"></script>
-        <script type="text/javascript" src="./js/Stats.min.js"></script>
-        <script type="text/javascript" src="../build/SPE.min.js"></script>
-        <script type="text/javascript" src="./js/safeLoader.js"></script>
+        <script src="./js/three_r120/three.js"></script>
+        <script src="./js/Stats.min.js"></script>
+        <script src="../build/SPE.js"></script>
+        <script src="./js/safeLoader.js"></script>
 
         <script type="text/javascript">
             // variables used in init()
@@ -36,11 +36,11 @@
             var emitter, particleGroup;
 
             let allIn = function (loaded) {
-                initBasic(loaded);
+                initExample(loaded);
             };
             safeLoad(["./img/smokeparticle.png"], allIn);
 
-            function initBasic(textures) {
+            function initExample(textures) {
                 // Setup the scene
                 function init() {
                     scene = new THREE.Scene();
@@ -135,7 +135,8 @@
                 init();
                 initParticles();
 
-                setTimeout(animate, 0);
+                animate();
+                //setTimeout(animate, 0);
             }
         </script>
     </body>

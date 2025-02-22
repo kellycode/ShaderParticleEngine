@@ -23,22 +23,22 @@
             <a href="./runtimeChanging.html">runtimeChanging</a>
         </div>
 
-        <script type="text/javascript" src="./js/three_r120/three.min.js"></script>
-        <script type="text/javascript" src="./js/Stats.min.js"></script>
-        <script type="text/javascript" src="../build/SPE.min.js"></script>
-        <script type="text/javascript" src="./js/basicScene.js"></script>
-		<script type="text/javascript" src="./js/safeLoader.js"></script>
+        <script src="./js/three_r120/three.js"></script>
+        <script src="./js/Stats.min.js"></script>
+        <script src="../build/SPE.js"></script>
+        <script src="./js/basicScene.js"></script>
+		<script src="./js/safeLoader.js"></script>
 
         <script type="text/javascript">
             // for basicScene.js
             var group;
 
 			let allIn = function(loaded) {
-				initClock(loaded);
+				initExample(loaded);
 			}
             safeLoad(["./img/smokeparticle.png"], allIn)
 
-            function initClock(textures) {
+            function initExample(textures) {
                 (group = new SPE.Group({
                     texture: {
                         value: textures["./img/smokeparticle.png"],
@@ -173,6 +173,7 @@
 
                 preRender();
                 animate();
+                //setTimeout(animate, 0);
             }
         </script>
     </body>

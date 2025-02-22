@@ -24,8 +24,7 @@
   "devDependencies": {
     "grunt": "^1.6.1",
     "grunt-contrib-concat": "^2.1.0",
-    "grunt-contrib-uglify": "^5.2.1",
-    "jsdoc": "^4.0.4"
+    "grunt-contrib-uglify": "^5.2.1"
   },
   "scripts": {
     "test": "grunt",

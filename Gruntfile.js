@@ -63,15 +63,6 @@ module.exports = function( grunt ) {
             },
         },
 
-        jsdoc: {
-            dist: {
-                src: 'src/**/*.js',
-                options: {
-                    destination: 'docs/api'
-                }
-            }
-        },
-
     } );
 
     grunt.loadNpmTasks( 'grunt-contrib-concat' );

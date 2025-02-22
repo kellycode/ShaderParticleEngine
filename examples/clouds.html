@@ -1,142 +1,148 @@
 <html>
-<head>
-    <title>SPE: Clouds</title>
-    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-    <link rel="stylesheet" type="text/css" href="./css/style.css">
-</head>
-<body>
-    <p class="numParticles"></p>
+    <head>
+        <title>SPE: Clouds</title>
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+        <link rel="stylesheet" type="text/css" href="./css/style.css" />
+    </head>
+    <body>
+        <p class="numParticles"></p>
 
-    <div class="link_man">
-        <h4>Examples</h4>
-        <a href="./activeMultiplier.html">activeMultiplier</a>
-        <a href="./basic.html">basic</a>
-        <a href="./clock.html">clock</a>
-        <a href="./clouds.html" style="color: lightgreen;">clouds</a>
-        <a href="./distributions.html">distributions</a>
-        <a href="./explosion.html">explosion</a>
-        <a href="./fog.html">fog</a>
-        <a href="./mouseFollow.html">mouseFollow</a>
-        <a href="./multipleEmitters.html">multipleEmitters</a>
-        <a href="./orbit.html">orbit</a>
-        <a href="./pool.html">pool</a>
-        <a href="./rotation.html">rotation</a>
-        <a href="./runtimeChanging.html">runtimeChanging</a>
-    </div>
+        <div class="link_man">
+            <h4>Examples</h4>
+            <a href="./activeMultiplier.html">activeMultiplier</a>
+            <a href="./basic.html">basic</a>
+            <a href="./clock.html">clock</a>
+            <a href="./clouds.html" style="color: lightgreen">clouds</a>
+            <a href="./distributions.html">distributions</a>
+            <a href="./explosion.html">explosion</a>
+            <a href="./fog.html">fog</a>
+            <a href="./mouseFollow.html">mouseFollow</a>
+            <a href="./multipleEmitters.html">multipleEmitters</a>
+            <a href="./orbit.html">orbit</a>
+            <a href="./pool.html">pool</a>
+            <a href="./rotation.html">rotation</a>
+            <a href="./runtimeChanging.html">runtimeChanging</a>
+        </div>
 
-    <script type="text/javascript" src="./js/three_r120/three.min.js"></script>
-    <script type="text/javascript" src="./js/Stats.min.js"></script>
-    <script type="text/javascript" src="../build/SPE.min.js"></script>
-    <script type="text/javascript" src="./js/safeLoader.js"></script>
+        <script src="./js/three_r120/three.js"></script>
+        <script src="./js/Stats.min.js"></script>
+        <script src="../build/SPE.js"></script>
+        <script src="./js/safeLoader.js"></script>
+        
 
-    <script type="text/javascript">
-        // variables used in init()
-        var scene, camera, renderer, stats, stats2, clock;
+        <script type="text/javascript">
+            // variables used in init()
+            var scene, camera, renderer, stats, stats2, clock;
 
-        // Used in initParticles()
-        var emitter, particleGroup;
+            // Used in initParticles()
+            var emitter, particleGroup;
 
-        // Setup the scene
-        function init() {
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 10000);
+            let allIn = function (loaded) {
+                initExample(loaded);
+            };
+            safeLoad(["./img/cloud.png"], allIn);
 
-            renderer = new THREE.WebGLRenderer();
-            renderer.setSize( window.innerWidth, window.innerHeight );
-            renderer.setClearColor(0x42c7ff);
+            function initExample(textures) {
+                // Setup the scene
+                function init() {
+                    scene = new THREE.Scene();
+                    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
 
-            stats = new Stats();
-            clock = new THREE.Clock();
+                    renderer = new THREE.WebGLRenderer();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                    renderer.setClearColor(0x42c7ff);
 
-            stats.domElement.style.position = 'absolute';
-            stats.domElement.style.top = '0';
+                    stats = new Stats();
+                    clock = new THREE.Clock();
 
-            scene.fog = new THREE.Fog( renderer.getClearColor(), 20, 0 );
+                    stats.domElement.style.position = "absolute";
+                    stats.domElement.style.top = "0";
 
-            document.body.appendChild( renderer.domElement );
-            document.body.appendChild( stats.domElement );
-        }
+                    scene.fog = new THREE.Fog(renderer.getClearColor(), 20, 0);
 
-        // Create particle group and emitter
-        function initParticles() {
-            particleGroup = new SPE.Group({
-                texture: {
-                    value: new THREE.TextureLoader().load('./img/cloud.png')
-                },
-                maxParticleCount: 3000,
-                blending: THREE.NormalBlending,
-                fog: true
-            });
-
-            emitter = new SPE.Emitter({
-                particleCount: 750,
-                maxAge: {
-                    value: 3,
-                },
-                position: {
-                    value: new THREE.Vector3( 0, -15, -50 ),
-                    spread: new THREE.Vector3( 100, 30, 100 )
-                },
-                velocity: {
-                    value: new THREE.Vector3( 0, 0, 30 )
-                },
-                wiggle: {
-                    spread: 10
-                },
-                size: {
-                    value: 75,
-                    spread: 50
-                },
-                opacity: {
-                    value: [ 0, 1, 0 ]
-                },
-                color: {
-                    value: new THREE.Color( 1, 1, 1 ),
-                    spread: new THREE.Color( 0.1, 0.1, 0.1 )
-                },
-                angle: {
-                    value: [ 0, Math.PI * 0.125 ]
+                    document.body.appendChild(renderer.domElement);
+                    document.body.appendChild(stats.domElement);
                 }
-            });
 
-            particleGroup.addEmitter( emitter );
-            scene.add( particleGroup.mesh );
+                // Create particle group and emitter
+                function initParticles() {
+                    particleGroup = new SPE.Group({
+                        texture: {
+                            value: textures["./img/cloud.png"],
+                        },
+                        maxParticleCount: 3000,
+                        blending: THREE.NormalBlending,
+                        fog: true,
+                    });
 
-            document.querySelector('.numParticles').textContent =
-                'Total particles: ' + emitter.particleCount;
-        }
+                    emitter = new SPE.Emitter({
+                        particleCount: 750,
+                        maxAge: {
+                            value: 3,
+                        },
+                        position: {
+                            value: new THREE.Vector3(0, -15, -50),
+                            spread: new THREE.Vector3(100, 30, 100),
+                        },
+                        velocity: {
+                            value: new THREE.Vector3(0, 0, 30),
+                        },
+                        wiggle: {
+                            spread: 10,
+                        },
+                        size: {
+                            value: 75,
+                            spread: 50,
+                        },
+                        opacity: {
+                            value: [0, 1, 0],
+                        },
+                        color: {
+                            value: new THREE.Color(1, 1, 1),
+                            spread: new THREE.Color(0.1, 0.1, 0.1),
+                        },
+                        angle: {
+                            value: [0, Math.PI * 0.125],
+                        },
+                    });
 
+                    particleGroup.addEmitter(emitter);
+                    scene.add(particleGroup.mesh);
 
+                    document.querySelector(".numParticles").textContent = "Total particles: " + emitter.particleCount;
+                }
 
-        function animate() {
-            requestAnimationFrame( animate );
-            render( clock.getDelta() );
-            stats.update();
-        }
+                function animate() {
+                    requestAnimationFrame(animate);
+                    render(clock.getDelta());
+                    stats.update();
+                }
 
+                function render(dt) {
+                    particleGroup.tick(dt);
+                    renderer.render(scene, camera);
+                }
 
-        function render( dt ) {
-            particleGroup.tick( dt );
-            renderer.render( scene, camera );
-        }
+                window.addEventListener(
+                    "resize",
+                    function () {
+                        var w = window.innerWidth,
+                            h = window.innerHeight;
 
+                        camera.aspect = w / h;
+                        camera.updateProjectionMatrix();
 
-        window.addEventListener( 'resize', function() {
-            var w = window.innerWidth,
-                h = window.innerHeight;
+                        renderer.setSize(w, h);
+                    },
+                    false
+                );
 
-            camera.aspect = w / h;
-            camera.updateProjectionMatrix();
+                init();
+                initParticles();
 
-            renderer.setSize( w, h );
-        }, false );
-
-        init();
-        initParticles();
-
-        setTimeout(animate, 0);
-
-    </script>
-
-</body>
+                animate();
+                //setTimeout(animate, 0);
+            }
+        </script>
+    </body>
 </html>

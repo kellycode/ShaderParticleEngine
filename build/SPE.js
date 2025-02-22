@@ -110,13 +110,13 @@ else if ( typeof exports !== 'undefined' && typeof module !== 'undefined' ) {
  * @param {Number} componentSize        The number of components per-value (ie. 3 for a vec3, 9 for a Mat3, etc.)
  * @param {Number} indexOffset          The index in the array from which to start assigning values. Default `0` if none provided
  */
-SPE.TypedArrayHelper = function( TypedArrayConstructor, size, componentSize, indexOffset ) {
-    'use strict';
+SPE.TypedArrayHelper = function (TypedArrayConstructor, size, componentSize, indexOffset) {
+    "use strict";
 
     this.componentSize = componentSize || 1;
-    this.size = ( size || 1 );
+    this.size = size || 1;
     this.TypedArrayConstructor = TypedArrayConstructor || Float32Array;
-    this.array = new TypedArrayConstructor( size * this.componentSize );
+    this.array = new TypedArrayConstructor(size * this.componentSize);
     this.indexOffset = indexOffset || 0;
 };
 
@@ -132,23 +132,21 @@ SPE.TypedArrayHelper.constructor = SPE.TypedArrayHelper;
  *
  * @param {Number} size The new size of the array.
  */
-SPE.TypedArrayHelper.prototype.setSize = function( size, noComponentMultiply ) {
-    'use strict';
+SPE.TypedArrayHelper.prototype.setSize = function (size, noComponentMultiply) {
+    "use strict";
 
-    var currentArraySize = this.array.length;
+    let currentArraySize = this.array.length;
 
-    if ( !noComponentMultiply ) {
+    if (!noComponentMultiply) {
         size = size * this.componentSize;
     }
 
-    if ( size < currentArraySize ) {
-        return this.shrink( size );
-    }
-    else if ( size > currentArraySize ) {
-        return this.grow( size );
-    }
-    else {
-        console.info( 'TypedArray is already of size:', size + '.', 'Will not resize.' );
+    if (size < currentArraySize) {
+        return this.shrink(size);
+    } else if (size > currentArraySize) {
+        return this.grow(size);
+    } else {
+        console.info("TypedArray is already of size:", size + ".", "Will not resize.");
     }
 };
 
@@ -158,10 +156,10 @@ SPE.TypedArrayHelper.prototype.setSize = function( size, noComponentMultiply ) {
  * @param  {Number} size The new size of the typed array. Must be smaller than `this.array.length`.
  * @return {SPE.TypedArrayHelper}      Instance of this class.
  */
-SPE.TypedArrayHelper.prototype.shrink = function( size ) {
-    'use strict';
+SPE.TypedArrayHelper.prototype.shrink = function (size) {
+    "use strict";
 
-    this.array = this.array.subarray( 0, size );
+    this.array = this.array.subarray(0, size);
     this.size = size;
     return this;
 };
@@ -171,19 +169,18 @@ SPE.TypedArrayHelper.prototype.shrink = function( size ) {
  * @param  {Number} size The new size of the typed array. Must be larger than `this.array.length`.
  * @return {SPE.TypedArrayHelper}      Instance of this class.
  */
-SPE.TypedArrayHelper.prototype.grow = function( size ) {
-    'use strict';
+SPE.TypedArrayHelper.prototype.grow = function (size) {
+    "use strict";
 
-    var existingArray = this.array,
-        newArray = new this.TypedArrayConstructor( size );
+    let existingArray = this.array;
+    let newArray = new this.TypedArrayConstructor(size);
 
-    newArray.set( existingArray );
+    newArray.set(existingArray);
     this.array = newArray;
     this.size = size;
 
     return this;
 };
-
 
 /**
  * Perform a splice operation on this array's buffer.
@@ -191,27 +188,26 @@ SPE.TypedArrayHelper.prototype.grow = function( size ) {
  * @param  {Number} end The end index of the splice. Will be multiplied by the number of components for this attribute.
  * @returns {Object} The SPE.TypedArrayHelper instance.
  */
-SPE.TypedArrayHelper.prototype.splice = function( start, end ) {
-    'use strict';
+SPE.TypedArrayHelper.prototype.splice = function (start, end) {
+    "use strict";
     start *= this.componentSize;
     end *= this.componentSize;
 
-    var data = [],
-        array = this.array,
-        size = array.length;
+    let data = [];
+    let array = this.array;
+    let size = array.length;
 
-    for ( var i = 0; i < size; ++i ) {
-        if ( i < start || i >= end ) {
-            data.push( array[ i ] );
+    for (let i = 0; i < size; ++i) {
+        if (i < start || i >= end) {
+            data.push(array[i]);
         }
         // array[ i ] = 0;
     }
 
-    this.setFromArray( 0, data );
+    this.setFromArray(0, data);
 
     return this;
 };
-
 
 /**
  * Copies from the given TypedArray into this one, using the index argument
@@ -222,20 +218,19 @@ SPE.TypedArrayHelper.prototype.splice = function( start, end ) {
  * @param {TypedArray} array The array from which to copy; the source array.
  * @return {SPE.TypedArrayHelper} Instance of this class.
  */
-SPE.TypedArrayHelper.prototype.setFromArray = function( index, array ) {
-    'use strict';
+SPE.TypedArrayHelper.prototype.setFromArray = function (index, array) {
+    "use strict";
 
-    var sourceArraySize = array.length,
+    let sourceArraySize = array.length,
         newSize = index + sourceArraySize;
 
-    if ( newSize > this.array.length ) {
-        this.grow( newSize );
-    }
-    else if ( newSize < this.array.length ) {
-        this.shrink( newSize );
+    if (newSize > this.array.length) {
+        this.grow(newSize);
+    } else if (newSize < this.array.length) {
+        this.shrink(newSize);
     }
 
-    this.array.set( array, this.indexOffset + index );
+    this.array.set(array, this.indexOffset + index);
 
     return this;
 };
@@ -247,10 +242,10 @@ SPE.TypedArrayHelper.prototype.setFromArray = function( index, array ) {
  * @param {Vector2} vec2  Any object that has `x` and `y` properties.
  * @return {SPE.TypedArrayHelper} Instance of this class.
  */
-SPE.TypedArrayHelper.prototype.setVec2 = function( index, vec2 ) {
-    'use strict';
+SPE.TypedArrayHelper.prototype.setVec2 = function (index, vec2) {
+    "use strict";
 
-    return this.setVec2Components( index, vec2.x, vec2.y );
+    return this.setVec2Components(index, vec2.x, vec2.y);
 };
 
 /**
@@ -261,14 +256,14 @@ SPE.TypedArrayHelper.prototype.setVec2 = function( index, vec2 ) {
  * @param {Number} y     The Vec2's `y` component.
  * @return {SPE.TypedArrayHelper} Instance of this class.
  */
-SPE.TypedArrayHelper.prototype.setVec2Components = function( index, x, y ) {
-    'use strict';
+SPE.TypedArrayHelper.prototype.setVec2Components = function (index, x, y) {
+    "use strict";
 
-    var array = this.array,
-        i = this.indexOffset + ( index * this.componentSize );
+    let array = this.array;
+    let i = this.indexOffset + index * this.componentSize;
 
-    array[ i ] = x;
-    array[ i + 1 ] = y;
+    array[i] = x;
+    array[i + 1] = y;
     return this;
 };
 
@@ -279,10 +274,10 @@ SPE.TypedArrayHelper.prototype.setVec2Components = function( index, x, y ) {
  * @param {Vector3} vec2  Any object that has `x`, `y`, and `z` properties.
  * @return {SPE.TypedArrayHelper} Instance of this class.
  */
-SPE.TypedArrayHelper.prototype.setVec3 = function( index, vec3 ) {
-    'use strict';
+SPE.TypedArrayHelper.prototype.setVec3 = function (index, vec3) {
+    "use strict";
 
-    return this.setVec3Components( index, vec3.x, vec3.y, vec3.z );
+    return this.setVec3Components(index, vec3.x, vec3.y, vec3.z);
 };
 
 /**
@@ -294,15 +289,15 @@ SPE.TypedArrayHelper.prototype.setVec3 = function( index, vec3 ) {
  * @param {Number} z     The Vec3's `z` component.
  * @return {SPE.TypedArrayHelper} Instance of this class.
  */
-SPE.TypedArrayHelper.prototype.setVec3Components = function( index, x, y, z ) {
-    'use strict';
+SPE.TypedArrayHelper.prototype.setVec3Components = function (index, x, y, z) {
+    "use strict";
 
-    var array = this.array,
-        i = this.indexOffset + ( index * this.componentSize );
+    let array = this.array;
+    let i = this.indexOffset + index * this.componentSize;
 
-    array[ i ] = x;
-    array[ i + 1 ] = y;
-    array[ i + 2 ] = z;
+    array[i] = x;
+    array[i + 1] = y;
+    array[i + 2] = z;
     return this;
 };
 
@@ -313,10 +308,10 @@ SPE.TypedArrayHelper.prototype.setVec3Components = function( index, x, y, z ) {
  * @param {Vector4} vec2  Any object that has `x`, `y`, `z`, and `w` properties.
  * @return {SPE.TypedArrayHelper} Instance of this class.
  */
-SPE.TypedArrayHelper.prototype.setVec4 = function( index, vec4 ) {
-    'use strict';
+SPE.TypedArrayHelper.prototype.setVec4 = function (index, vec4) {
+    "use strict";
 
-    return this.setVec4Components( index, vec4.x, vec4.y, vec4.z, vec4.w );
+    return this.setVec4Components(index, vec4.x, vec4.y, vec4.z, vec4.w);
 };
 
 /**
@@ -329,16 +324,16 @@ SPE.TypedArrayHelper.prototype.setVec4 = function( index, vec4 ) {
  * @param {Number} w     The Vec4's `w` component.
  * @return {SPE.TypedArrayHelper} Instance of this class.
  */
-SPE.TypedArrayHelper.prototype.setVec4Components = function( index, x, y, z, w ) {
-    'use strict';
+SPE.TypedArrayHelper.prototype.setVec4Components = function (index, x, y, z, w) {
+    "use strict";
 
-    var array = this.array,
-        i = this.indexOffset + ( index * this.componentSize );
+    let array = this.array;
+    let i = this.indexOffset + index * this.componentSize;
 
-    array[ i ] = x;
-    array[ i + 1 ] = y;
-    array[ i + 2 ] = z;
-    array[ i + 3 ] = w;
+    array[i] = x;
+    array[i + 1] = y;
+    array[i + 2] = z;
+    array[i + 3] = w;
     return this;
 };
 
@@ -349,10 +344,10 @@ SPE.TypedArrayHelper.prototype.setVec4Components = function( index, x, y, z, w )
  * @param {Matrix3} mat3 The 3x3 matrix to set from. Must have a TypedArray property named `elements` to copy from.
  * @return {SPE.TypedArrayHelper} Instance of this class.
  */
-SPE.TypedArrayHelper.prototype.setMat3 = function( index, mat3 ) {
-    'use strict';
+SPE.TypedArrayHelper.prototype.setMat3 = function (index, mat3) {
+    "use strict";
 
-    return this.setFromArray( this.indexOffset + ( index * this.componentSize ), mat3.elements );
+    return this.setFromArray(this.indexOffset + index * this.componentSize, mat3.elements);
 };
 
 /**
@@ -362,10 +357,10 @@ SPE.TypedArrayHelper.prototype.setMat3 = function( index, mat3 ) {
  * @param {Matrix4} mat3 The 4x4 matrix to set from. Must have a TypedArray property named `elements` to copy from.
  * @return {SPE.TypedArrayHelper} Instance of this class.
  */
-SPE.TypedArrayHelper.prototype.setMat4 = function( index, mat4 ) {
-    'use strict';
+SPE.TypedArrayHelper.prototype.setMat4 = function (index, mat4) {
+    "use strict";
 
-    return this.setFromArray( this.indexOffset + ( index * this.componentSize ), mat4.elements );
+    return this.setFromArray(this.indexOffset + index * this.componentSize, mat4.elements);
 };
 
 /**
@@ -375,10 +370,10 @@ SPE.TypedArrayHelper.prototype.setMat4 = function( index, mat4 ) {
  * @param {Color} color  Any object that has `r`, `g`, and `b` properties.
  * @return {SPE.TypedArrayHelper} Instance of this class.
  */
-SPE.TypedArrayHelper.prototype.setColor = function( index, color ) {
-    'use strict';
+SPE.TypedArrayHelper.prototype.setColor = function (index, color) {
+    "use strict";
 
-    return this.setVec3Components( index, color.r, color.g, color.b );
+    return this.setVec3Components(index, color.r, color.g, color.b);
 };
 
 /**
@@ -388,10 +383,10 @@ SPE.TypedArrayHelper.prototype.setColor = function( index, color ) {
  * @param {Number} numericValue  The number to assign to this index in the array.
  * @return {SPE.TypedArrayHelper} Instance of this class.
  */
-SPE.TypedArrayHelper.prototype.setNumber = function( index, numericValue ) {
-    'use strict';
+SPE.TypedArrayHelper.prototype.setNumber = function (index, numericValue) {
+    "use strict";
 
-    this.array[ this.indexOffset + ( index * this.componentSize ) ] = numericValue;
+    this.array[this.indexOffset + index * this.componentSize] = numericValue;
     return this;
 };
 
@@ -405,10 +400,10 @@ SPE.TypedArrayHelper.prototype.setNumber = function( index, numericValue ) {
  * @param  {Number} index The index in the array to fetch.
  * @return {Number}       The value at the given index.
  */
-SPE.TypedArrayHelper.prototype.getValueAtIndex = function( index ) {
-    'use strict';
+SPE.TypedArrayHelper.prototype.getValueAtIndex = function (index) {
+    "use strict";
 
-    return this.array[ this.indexOffset + index ];
+    return this.array[this.indexOffset + index];
 };
 
 /**
@@ -421,11 +416,12 @@ SPE.TypedArrayHelper.prototype.getValueAtIndex = function( index ) {
  * @param  {Number} index The index in the array to fetch.
  * @return {TypedArray}       The component value at the given index.
  */
-SPE.TypedArrayHelper.prototype.getComponentValueAtIndex = function( index ) {
-    'use strict';
+SPE.TypedArrayHelper.prototype.getComponentValueAtIndex = function (index) {
+    "use strict";
 
-    return this.array.subarray( this.indexOffset + ( index * this.componentSize ) );
+    return this.array.subarray(this.indexOffset + index * this.componentSize);
 };
+
 
 /**
  * A helper to handle creating and updating a THREE.BufferAttribute instance.
@@ -436,20 +432,20 @@ SPE.TypedArrayHelper.prototype.getComponentValueAtIndex = function( index ) {
  * @param {Boolean=} dynamicBuffer Whether this buffer attribute should be marked as dynamic or not.
  * @param {Function=} arrayType     A reference to a TypedArray constructor. Defaults to Float32Array if none provided.
  */
-SPE.ShaderAttribute = function( type, dynamicBuffer, arrayType ) {
-	'use strict';
+SPE.ShaderAttribute = function (type, dynamicBuffer, arrayType) {
+    "use strict";
 
-	var typeMap = SPE.ShaderAttribute.typeSizeMap;
+    let typeMap = SPE.ShaderAttribute.typeSizeMap;
 
-	this.type = typeof type === 'string' && typeMap.hasOwnProperty( type ) ? type : 'f';
-	this.componentSize = typeMap[ this.type ];
-	this.arrayType = arrayType || Float32Array;
-	this.typedArray = null;
-	this.bufferAttribute = null;
-	this.dynamicBuffer = !!dynamicBuffer;
+    this.type = typeof type === "string" && typeMap.hasOwnProperty(type) ? type : "f";
+    this.componentSize = typeMap[this.type];
+    this.arrayType = arrayType || Float32Array;
+    this.typedArray = null;
+    this.bufferAttribute = null;
+    this.dynamicBuffer = !!dynamicBuffer;
 
-	this.updateMin = 0;
-	this.updateMax = 0;
+    this.updateMin = 0;
+    this.updateMax = 0;
 };
 
 SPE.ShaderAttribute.constructor = SPE.ShaderAttribute;
@@ -459,47 +455,47 @@ SPE.ShaderAttribute.constructor = SPE.ShaderAttribute;
  * @enum {Number}
  */
 SPE.ShaderAttribute.typeSizeMap = {
-	/**
-	 * Float
-	 * @type {Number}
-	 */
-	f: 1,
+    /**
+     * Float
+     * @type {Number}
+     */
+    f: 1,
 
-	/**
-	 * Vec2
-	 * @type {Number}
-	 */
-	v2: 2,
+    /**
+     * Vec2
+     * @type {Number}
+     */
+    v2: 2,
 
-	/**
-	 * Vec3
-	 * @type {Number}
-	 */
-	v3: 3,
+    /**
+     * Vec3
+     * @type {Number}
+     */
+    v3: 3,
 
-	/**
-	 * Vec4
-	 * @type {Number}
-	 */
-	v4: 4,
+    /**
+     * Vec4
+     * @type {Number}
+     */
+    v4: 4,
 
-	/**
-	 * Color
-	 * @type {Number}
-	 */
-	c: 3,
+    /**
+     * Color
+     * @type {Number}
+     */
+    c: 3,
 
-	/**
-	 * Mat3
-	 * @type {Number}
-	 */
-	m3: 9,
+    /**
+     * Mat3
+     * @type {Number}
+     */
+    m3: 9,
 
-	/**
-	 * Mat4
-	 * @type {Number}
-	 */
-	m4: 16
+    /**
+     * Mat4
+     * @type {Number}
+     */
+    m4: 16,
 };
 
 /**
@@ -509,45 +505,41 @@ SPE.ShaderAttribute.typeSizeMap = {
  * @param {Number} min The start of the range to mark as needing an update.
  * @param {Number} max The end of the range to mark as needing an update.
  */
-SPE.ShaderAttribute.prototype.setUpdateRange = function( min, max ) {
-	'use strict';
+SPE.ShaderAttribute.prototype.setUpdateRange = function (min, max) {
+    "use strict";
 
-	this.updateMin = Math.min( min * this.componentSize, this.updateMin * this.componentSize );
-	this.updateMax = Math.max( max * this.componentSize, this.updateMax * this.componentSize );
+    this.updateMin = Math.min(min * this.componentSize, this.updateMin * this.componentSize);
+    this.updateMax = Math.max(max * this.componentSize, this.updateMax * this.componentSize);
 };
 
 /**
  * Calculate the number of indices that this attribute should mark as needing
  * updating. Also marks the attribute as needing an update.
  */
-SPE.ShaderAttribute.prototype.flagUpdate = function() {
-	'use strict';
+SPE.ShaderAttribute.prototype.flagUpdate = function () {
+    "use strict";
 
-	var attr = this.bufferAttribute,
-		range = attr.updateRange;
+    let attr = this.bufferAttribute;
+    let range = attr.updateRange;
 
-	range.offset = this.updateMin;
-	range.count = Math.min( ( this.updateMax - this.updateMin ) + this.componentSize, this.typedArray.array.length );
-	attr.needsUpdate = true;
+    range.offset = this.updateMin;
+    range.count = Math.min(this.updateMax - this.updateMin + this.componentSize, this.typedArray.array.length);
+    attr.needsUpdate = true;
 };
-
-
 
 /**
  * Reset the index update counts for this attribute
  */
-SPE.ShaderAttribute.prototype.resetUpdateRange = function() {
-	'use strict';
+SPE.ShaderAttribute.prototype.resetUpdateRange = function () {
+    "use strict";
 
-	this.updateMin = 0;
-	this.updateMax = 0;
+    this.updateMin = 0;
+    this.updateMax = 0;
 };
 
-SPE.ShaderAttribute.prototype.resetDynamic = function() {
-	'use strict';
-	this.bufferAttribute.usage = this.dynamicBuffer ?
-		THREE.DynamicDrawUsage :
-		THREE.StaticDrawUsage;
+SPE.ShaderAttribute.prototype.resetDynamic = function () {
+    "use strict";
+    this.bufferAttribute.usage = this.dynamicBuffer ? THREE.DynamicDrawUsage : THREE.StaticDrawUsage;
 };
 
 /**
@@ -555,25 +547,25 @@ SPE.ShaderAttribute.prototype.resetDynamic = function() {
  * @param  {Number} start The start index of the splice. Will be multiplied by the number of components for this attribute.
  * @param  {Number} end The end index of the splice. Will be multiplied by the number of components for this attribute.
  */
-SPE.ShaderAttribute.prototype.splice = function( start, end ) {
-	'use strict';
+SPE.ShaderAttribute.prototype.splice = function (start, end) {
+    "use strict";
 
-	this.typedArray.splice( start, end );
+    this.typedArray.splice(start, end);
 
-	// Reset the reference to the attribute's typed array
-	// since it has probably changed.
-	this.forceUpdateAll();
+    // Reset the reference to the attribute's typed array
+    // since it has probably changed.
+    this.forceUpdateAll();
 };
 
-SPE.ShaderAttribute.prototype.forceUpdateAll = function() {
-	'use strict';
+SPE.ShaderAttribute.prototype.forceUpdateAll = function () {
+    "use strict";
 
-	this.bufferAttribute.array = this.typedArray.array;
-	this.bufferAttribute.updateRange.offset = 0;
-	this.bufferAttribute.updateRange.count = -1;
+    this.bufferAttribute.array = this.typedArray.array;
+    this.bufferAttribute.updateRange.offset = 0;
+    this.bufferAttribute.updateRange.count = -1;
 
-	this.bufferAttribute.usage = THREE.StaticDrawUsage;
-	this.bufferAttribute.needsUpdate = true;
+    this.bufferAttribute.usage = THREE.StaticDrawUsage;
+    this.bufferAttribute.needsUpdate = true;
 };
 
 /**
@@ -585,26 +577,25 @@ SPE.ShaderAttribute.prototype.forceUpdateAll = function() {
  *
  * @param  {Number} size The size of the typed array to create or update to.
  */
-SPE.ShaderAttribute.prototype._ensureTypedArray = function( size ) {
-	'use strict';
+SPE.ShaderAttribute.prototype._ensureTypedArray = function (size) {
+    "use strict";
 
-	// Condition that's most likely to be true at the top: no change.
-	if ( this.typedArray !== null && this.typedArray.size === size * this.componentSize ) {
-		return;
-	}
+    // Condition that's most likely to be true at the top: no change.
+    if (this.typedArray !== null && this.typedArray.size === size * this.componentSize) {
+        return;
+    }
 
-	// Resize the array if we need to, telling the TypedArrayHelper to
-	// ignore it's component size when evaluating size.
-	else if ( this.typedArray !== null && this.typedArray.size !== size ) {
-		this.typedArray.setSize( size );
-	}
+    // Resize the array if we need to, telling the TypedArrayHelper to
+    // ignore it's component size when evaluating size.
+    else if (this.typedArray !== null && this.typedArray.size !== size) {
+        this.typedArray.setSize(size);
+    }
 
-	// This condition should only occur once in an attribute's lifecycle.
-	else if ( this.typedArray === null ) {
-		this.typedArray = new SPE.TypedArrayHelper( this.arrayType, size, this.componentSize );
-	}
+    // This condition should only occur once in an attribute's lifecycle.
+    else if (this.typedArray === null) {
+        this.typedArray = new SPE.TypedArrayHelper(this.arrayType, size, this.componentSize);
+    }
 };
-
 
 /**
  * Creates a THREE.BufferAttribute instance if one doesn't exist already.
@@ -615,50 +606,48 @@ SPE.ShaderAttribute.prototype._ensureTypedArray = function( size ) {
  *
  * @param  {Number} size The size of the typed array to create if one doesn't exist, or resize existing array to.
  */
-SPE.ShaderAttribute.prototype._createBufferAttribute = function( size ) {
-	'use strict';
+SPE.ShaderAttribute.prototype._createBufferAttribute = function (size) {
+    "use strict";
 
-	// Make sure the typedArray is present and correct.
-	this._ensureTypedArray( size );
+    // Make sure the typedArray is present and correct.
+    this._ensureTypedArray(size);
 
-	// Don't create it if it already exists, but do
-	// flag that it needs updating on the next render
-	// cycle.
-	if ( this.bufferAttribute !== null ) {
-		this.bufferAttribute.array = this.typedArray.array;
+    // Don't create it if it already exists, but do
+    // flag that it needs updating on the next render
+    // cycle.
+    if (this.bufferAttribute !== null) {
+        this.bufferAttribute.array = this.typedArray.array;
 
-		// Since THREE.js version 81, dynamic count calculation was removed
-		// so I need to do it manually here.
-		//
-		// In the next minor release, I may well remove this check and force
-		// dependency on THREE r81+.
-		if ( parseFloat( THREE.REVISION ) >= 81 ) {
-			this.bufferAttribute.count = this.bufferAttribute.array.length / this.bufferAttribute.itemSize;
-		}
+        // Since THREE.js version 81, dynamic count calculation was removed
+        // so I need to do it manually here.
+        //
+        // In the next minor release, I may well remove this check and force
+        // dependency on THREE r81+.
+        if (parseFloat(THREE.REVISION) >= 81) {
+            this.bufferAttribute.count = this.bufferAttribute.array.length / this.bufferAttribute.itemSize;
+        }
 
-		this.bufferAttribute.needsUpdate = true;
-		return;
-	}
+        this.bufferAttribute.needsUpdate = true;
+        return;
+    }
 
-	this.bufferAttribute = new THREE.BufferAttribute( this.typedArray.array, this.componentSize );
+    this.bufferAttribute = new THREE.BufferAttribute(this.typedArray.array, this.componentSize);
 
-	this.bufferAttribute.usage = this.dynamicBuffer ?
-		THREE.DynamicDrawUsage :
-		THREE.StaticDrawUsage;
+    this.bufferAttribute.usage = this.dynamicBuffer ? THREE.DynamicDrawUsage : THREE.StaticDrawUsage;
 };
 
 /**
  * Returns the length of the typed array associated with this attribute.
  * @return {Number} The length of the typed array. Will be 0 if no typed array has been created yet.
  */
-SPE.ShaderAttribute.prototype.getLength = function() {
-	'use strict';
+SPE.ShaderAttribute.prototype.getLength = function () {
+    "use strict";
 
-	if ( this.typedArray === null ) {
-		return 0;
-	}
+    if (this.typedArray === null) {
+        return 0;
+    }
 
-	return this.typedArray.array.length;
+    return this.typedArray.array.length;
 };
 
 
@@ -1118,25 +1107,25 @@ SPE.utils = {
          * Boolean type.
          * @type {String}
          */
-        BOOLEAN: 'boolean',
+        BOOLEAN: "boolean",
 
         /**
          * String type.
          * @type {String}
          */
-        STRING: 'string',
+        STRING: "string",
 
         /**
          * Number type.
          * @type {String}
          */
-        NUMBER: 'number',
+        NUMBER: "number",
 
         /**
          * Object type.
          * @type {String}
          */
-        OBJECT: 'object'
+        OBJECT: "object",
     },
 
     /**
@@ -1149,13 +1138,12 @@ SPE.utils = {
      * @param  {(boolean|string|number|object)} defaultValue A default value to fallback on if the type check fails.
      * @return {(boolean|string|number|object)}              The given value if type check passes, or the default value if it fails.
      */
-    ensureTypedArg: function( arg, type, defaultValue ) {
-        'use strict';
+    ensureTypedArg: function (arg, type, defaultValue) {
+        "use strict";
 
-        if ( typeof arg === type ) {
+        if (typeof arg === type) {
             return arg;
-        }
-        else {
+        } else {
             return defaultValue;
         }
     },
@@ -1172,15 +1160,15 @@ SPE.utils = {
      * @param  {(boolean|string|number|object)} defaultValue A default fallback value.
      * @return {(boolean|string|number|object)}              The given value if type check passes, or the default value if it fails.
      */
-    ensureArrayTypedArg: function( arg, type, defaultValue ) {
-        'use strict';
+    ensureArrayTypedArg: function (arg, type, defaultValue) {
+        "use strict";
 
         // If the argument being checked is an array, loop through
         // it and ensure all the values are of the correct type,
         // falling back to the defaultValue if any aren't.
-        if ( Array.isArray( arg ) ) {
-            for ( var i = arg.length - 1; i >= 0; --i ) {
-                if ( typeof arg[ i ] !== type ) {
+        if (Array.isArray(arg)) {
+            for (let i = arg.length - 1; i >= 0; --i) {
+                if (typeof arg[i] !== type) {
                     return defaultValue;
                 }
             }
@@ -1190,7 +1178,7 @@ SPE.utils = {
 
         // If the arg isn't an array then just fallback to
         // checking the type.
-        return this.ensureTypedArg( arg, type, defaultValue );
+        return this.ensureTypedArg(arg, type, defaultValue);
     },
 
     /**
@@ -1201,13 +1189,12 @@ SPE.utils = {
      * @param  {Object} defaultValue A default fallback value if instance check fails
      * @return {Object}              The given value if type check passes, or the default value if it fails.
      */
-    ensureInstanceOf: function( arg, instance, defaultValue ) {
-        'use strict';
+    ensureInstanceOf: function (arg, instance, defaultValue) {
+        "use strict";
 
-        if ( instance !== undefined && arg instanceof instance ) {
+        if (instance !== undefined && arg instanceof instance) {
             return arg;
-        }
-        else {
+        } else {
             return defaultValue;
         }
     },
@@ -1224,15 +1211,15 @@ SPE.utils = {
      * @param  {Object} defaultValue A default fallback value if instance check fails
      * @return {Object}              The given value if type check passes, or the default value if it fails.
      */
-    ensureArrayInstanceOf: function( arg, instance, defaultValue ) {
-        'use strict';
+    ensureArrayInstanceOf: function (arg, instance, defaultValue) {
+        "use strict";
 
         // If the argument being checked is an array, loop through
         // it and ensure all the values are of the correct type,
         // falling back to the defaultValue if any aren't.
-        if ( Array.isArray( arg ) ) {
-            for ( var i = arg.length - 1; i >= 0; --i ) {
-                if ( instance !== undefined && arg[ i ] instanceof instance === false ) {
+        if (Array.isArray(arg)) {
+            for (let i = arg.length - 1; i >= 0; --i) {
+                if (instance !== undefined && arg[i] instanceof instance === false) {
                     return defaultValue;
                 }
             }
@@ -1242,7 +1229,7 @@ SPE.utils = {
 
         // If the arg isn't an array then just fallback to
         // checking the type.
-        return this.ensureInstanceOf( arg, instance, defaultValue );
+        return this.ensureInstanceOf(arg, instance, defaultValue);
     },
 
     /**
@@ -1257,31 +1244,31 @@ SPE.utils = {
      * @param  {Number} minLength The minimum length of the array to create.
      * @param  {Number} maxLength The maximum length of the array to create.
      */
-    ensureValueOverLifetimeCompliance: function( property, minLength, maxLength ) {
-        'use strict';
+    ensureValueOverLifetimeCompliance: function (property, minLength, maxLength) {
+        "use strict";
 
         minLength = minLength || 3;
         maxLength = maxLength || 3;
 
         // First, ensure both properties are arrays.
-        if ( Array.isArray( property._value ) === false ) {
-            property._value = [ property._value ];
+        if (Array.isArray(property._value) === false) {
+            property._value = [property._value];
         }
 
-        if ( Array.isArray( property._spread ) === false ) {
-            property._spread = [ property._spread ];
+        if (Array.isArray(property._spread) === false) {
+            property._spread = [property._spread];
         }
 
-        var valueLength = this.clamp( property._value.length, minLength, maxLength ),
-            spreadLength = this.clamp( property._spread.length, minLength, maxLength ),
-            desiredLength = Math.max( valueLength, spreadLength );
+        let valueLength = this.clamp(property._value.length, minLength, maxLength);
+        let spreadLength = this.clamp(property._spread.length, minLength, maxLength);
+        let desiredLength = Math.max(valueLength, spreadLength);
 
-        if ( property._value.length !== desiredLength ) {
-            property._value = this.interpolateArray( property._value, desiredLength );
+        if (property._value.length !== desiredLength) {
+            property._value = this.interpolateArray(property._value, desiredLength);
         }
 
-        if ( property._spread.length !== desiredLength ) {
-            property._spread = this.interpolateArray( property._spread, desiredLength );
+        if (property._spread.length !== desiredLength) {
+            property._spread = this.interpolateArray(property._spread, desiredLength);
         }
     },
 
@@ -1297,27 +1284,26 @@ SPE.utils = {
      * @param  {Number} newLength The length the array should be interpolated to.
      * @return {Array}           The interpolated array.
      */
-    interpolateArray: function( srcArray, newLength ) {
-        'use strict';
+    interpolateArray: function (srcArray, newLength) {
+        "use strict";
 
-        var sourceLength = srcArray.length,
-            newArray = [ typeof srcArray[ 0 ].clone === 'function' ? srcArray[ 0 ].clone() : srcArray[ 0 ] ],
-            factor = ( sourceLength - 1 ) / ( newLength - 1 );
+        let sourceLength = srcArray.length;
+        let newArray = [typeof srcArray[0].clone === "function" ? srcArray[0].clone() : srcArray[0]];
+        let factor = (sourceLength - 1) / (newLength - 1);
 
+        for (let i = 1; i < newLength - 1; ++i) {
+            let f = i * factor;
+            let before = Math.floor(f);
+            let after = Math.ceil(f);
+            let delta = f - before;
 
-        for ( var i = 1; i < newLength - 1; ++i ) {
-            var f = i * factor,
-                before = Math.floor( f ),
-                after = Math.ceil( f ),
-                delta = f - before;
-
-            newArray[ i ] = this.lerpTypeAgnostic( srcArray[ before ], srcArray[ after ], delta );
+            newArray[i] = this.lerpTypeAgnostic(srcArray[before], srcArray[after], delta);
         }
 
         newArray.push(
-            typeof srcArray[ sourceLength - 1 ].clone === 'function' ?
-            srcArray[ sourceLength - 1 ].clone() :
-            srcArray[ sourceLength - 1 ]
+            typeof srcArray[sourceLength - 1].clone === "function"
+                ? srcArray[sourceLength - 1].clone()
+                : srcArray[sourceLength - 1]
         );
 
         return newArray;
@@ -1330,10 +1316,10 @@ SPE.utils = {
      * @param  {Number} max   The maximum value.
      * @return {Number}       The clamped number.
      */
-    clamp: function( value, min, max ) {
-        'use strict';
+    clamp: function (value, min, max) {
+        "use strict";
 
-        return Math.max( min, Math.min( value, max ) );
+        return Math.max(min, Math.min(value, max));
     },
 
     /**
@@ -1345,15 +1331,15 @@ SPE.utils = {
      * @param  {Boolean} randomise Whether the value should be randomised.
      * @return {Number}           The result of the operation.
      */
-    zeroToEpsilon: function( value, randomise ) {
-        'use strict';
+    zeroToEpsilon: function (value, randomise) {
+        "use strict";
 
-        var epsilon = 0.00001,
-            result = value;
+        let epsilon = 0.00001;
+        let result = value;
 
         result = randomise ? Math.random() * epsilon * 10 : epsilon;
 
-        if ( value < 0 && value > -epsilon ) {
+        if (value < 0 && value > -epsilon) {
             result = -result;
         }
 
@@ -1380,45 +1366,40 @@ SPE.utils = {
      *                                               the start and end arguments aren't a supported type, or
      *                                               if their types do not match.
      */
-    lerpTypeAgnostic: function( start, end, delta ) {
-        'use strict';
+    lerpTypeAgnostic: function (start, end, delta) {
+        "use strict";
 
-        var types = this.types,
-            out;
+        let types = this.types;
+        let out;
 
-        if ( typeof start === types.NUMBER && typeof end === types.NUMBER ) {
-            return start + ( ( end - start ) * delta );
-        }
-        else if ( start instanceof THREE.Vector2 && end instanceof THREE.Vector2 ) {
+        if (typeof start === types.NUMBER && typeof end === types.NUMBER) {
+            return start + (end - start) * delta;
+        } else if (start instanceof THREE.Vector2 && end instanceof THREE.Vector2) {
             out = start.clone();
-            out.x = this.lerp( start.x, end.x, delta );
-            out.y = this.lerp( start.y, end.y, delta );
+            out.x = this.lerp(start.x, end.x, delta);
+            out.y = this.lerp(start.y, end.y, delta);
             return out;
-        }
-        else if ( start instanceof THREE.Vector3 && end instanceof THREE.Vector3 ) {
+        } else if (start instanceof THREE.Vector3 && end instanceof THREE.Vector3) {
             out = start.clone();
-            out.x = this.lerp( start.x, end.x, delta );
-            out.y = this.lerp( start.y, end.y, delta );
-            out.z = this.lerp( start.z, end.z, delta );
+            out.x = this.lerp(start.x, end.x, delta);
+            out.y = this.lerp(start.y, end.y, delta);
+            out.z = this.lerp(start.z, end.z, delta);
             return out;
-        }
-        else if ( start instanceof THREE.Vector4 && end instanceof THREE.Vector4 ) {
+        } else if (start instanceof THREE.Vector4 && end instanceof THREE.Vector4) {
             out = start.clone();
-            out.x = this.lerp( start.x, end.x, delta );
-            out.y = this.lerp( start.y, end.y, delta );
-            out.z = this.lerp( start.z, end.z, delta );
-            out.w = this.lerp( start.w, end.w, delta );
+            out.x = this.lerp(start.x, end.x, delta);
+            out.y = this.lerp(start.y, end.y, delta);
+            out.z = this.lerp(start.z, end.z, delta);
+            out.w = this.lerp(start.w, end.w, delta);
             return out;
-        }
-        else if ( start instanceof THREE.Color && end instanceof THREE.Color ) {
+        } else if (start instanceof THREE.Color && end instanceof THREE.Color) {
             out = start.clone();
-            out.r = this.lerp( start.r, end.r, delta );
-            out.g = this.lerp( start.g, end.g, delta );
-            out.b = this.lerp( start.b, end.b, delta );
+            out.r = this.lerp(start.r, end.r, delta);
+            out.g = this.lerp(start.g, end.g, delta);
+            out.b = this.lerp(start.b, end.b, delta);
             return out;
-        }
-        else {
-            console.warn( 'Invalid argument types, or argument types do not match:', start, end );
+        } else {
+            console.warn("Invalid argument types, or argument types do not match:", start, end);
         }
     },
 
@@ -1429,9 +1410,9 @@ SPE.utils = {
      * @param  {Number} delta The position to interpolate to.
      * @return {Number}       The result of the lerp operation.
      */
-    lerp: function( start, end, delta ) {
-        'use strict';
-        return start + ( ( end - start ) * delta );
+    lerp: function (start, end, delta) {
+        "use strict";
+        return start + (end - start) * delta;
     },
 
     /**
@@ -1441,23 +1422,23 @@ SPE.utils = {
      * @param  {Number} multiple The multiple to round to.
      * @return {Number}          The result of the round operation.
      */
-    roundToNearestMultiple: function( n, multiple ) {
-        'use strict';
+    roundToNearestMultiple: function (n, multiple) {
+        "use strict";
 
-        var remainder = 0;
+        let remainder = 0;
 
-        if ( multiple === 0 ) {
+        if (multiple === 0) {
             return n;
         }
 
-        remainder = Math.abs( n ) % multiple;
+        remainder = Math.abs(n) % multiple;
 
-        if ( remainder === 0 ) {
+        if (remainder === 0) {
             return n;
         }
 
-        if ( n < 0 ) {
-            return -( Math.abs( n ) - remainder );
+        if (n < 0) {
+            return -(Math.abs(n) - remainder);
         }
 
         return n + multiple - remainder;
@@ -1469,11 +1450,11 @@ SPE.utils = {
      * @param  {Array} array The array of values to check equality of.
      * @return {Boolean}       Whether the array's values are all equal or not.
      */
-    arrayValuesAreEqual: function( array ) {
-        'use strict';
+    arrayValuesAreEqual: function (array) {
+        "use strict";
 
-        for ( var i = 0; i < array.length - 1; ++i ) {
-            if ( array[ i ] !== array[ i + 1 ] ) {
+        for (let i = 0; i < array.length - 1; ++i) {
+            if (array[i] !== array[i + 1]) {
                 return false;
             }
         }
@@ -1482,10 +1463,10 @@ SPE.utils = {
     },
 
     // colorsAreEqual: function() {
-    //     var colors = Array.prototype.slice.call( arguments ),
+    //     let colors = Array.prototype.slice.call( arguments ),
     //         numColors = colors.length;
 
-    //     for ( var i = 0, color1, color2; i < numColors - 1; ++i ) {
+    //     for ( let i = 0, color1, color2; i < numColors - 1; ++i ) {
     //         color1 = colors[ i ];
     //         color2 = colors[ i + 1 ];
 
@@ -1501,7 +1482,6 @@ SPE.utils = {
     //     return true;
     // },
 
-
     /**
      * Given a start value and a spread value, create and return a random
      * number.
@@ -1509,12 +1489,10 @@ SPE.utils = {
      * @param  {Number} spread The size of the random variance to apply.
      * @return {Number}        A randomised number.
      */
-    randomFloat: function( base, spread ) {
-        'use strict';
-        return base + spread * ( Math.random() - 0.5 );
+    randomFloat: function (base, spread) {
+        "use strict";
+        return base + spread * (Math.random() - 0.5);
     },
-
-
 
     /**
      * Given an SPE.ShaderAttribute instance, and various other settings,
@@ -1526,24 +1504,24 @@ SPE.utils = {
      * @param  {Object} spread      THREE.Vector3 instance describing the random variance to apply to the start value.
      * @param  {Object} spreadClamp THREE.Vector3 instance describing the multiples to clamp the randomness to.
      */
-    randomVector3: function( attribute, index, base, spread, spreadClamp ) {
-        'use strict';
+    randomVector3: function (attribute, index, base, spread, spreadClamp) {
+        "use strict";
 
-        var x = base.x + ( Math.random() * spread.x - ( spread.x * 0.5 ) ),
-            y = base.y + ( Math.random() * spread.y - ( spread.y * 0.5 ) ),
-            z = base.z + ( Math.random() * spread.z - ( spread.z * 0.5 ) );
+        let x = base.x + (Math.random() * spread.x - spread.x * 0.5);
+        let y = base.y + (Math.random() * spread.y - spread.y * 0.5);
+        let z = base.z + (Math.random() * spread.z - spread.z * 0.5);
 
-        // var x = this.randomFloat( base.x, spread.x ),
+        // let x = this.randomFloat( base.x, spread.x ),
         // y = this.randomFloat( base.y, spread.y ),
         // z = this.randomFloat( base.z, spread.z );
 
-        if ( spreadClamp ) {
-            x = -spreadClamp.x * 0.5 + this.roundToNearestMultiple( x, spreadClamp.x );
-            y = -spreadClamp.y * 0.5 + this.roundToNearestMultiple( y, spreadClamp.y );
-            z = -spreadClamp.z * 0.5 + this.roundToNearestMultiple( z, spreadClamp.z );
+        if (spreadClamp) {
+            x = -spreadClamp.x * 0.5 + this.roundToNearestMultiple(x, spreadClamp.x);
+            y = -spreadClamp.y * 0.5 + this.roundToNearestMultiple(y, spreadClamp.y);
+            z = -spreadClamp.z * 0.5 + this.roundToNearestMultiple(z, spreadClamp.z);
         }
 
-        attribute.typedArray.setVec3Components( index, x, y, z );
+        attribute.typedArray.setVec3Components(index, x, y, z);
     },
 
     /**
@@ -1554,26 +1532,24 @@ SPE.utils = {
      * @param  {Object} base      THREE.Color instance describing the start color.
      * @param  {Object} spread    THREE.Vector3 instance describing the random variance to apply to the start color.
      */
-    randomColor: function( attribute, index, base, spread ) {
-        'use strict';
+    randomColor: function (attribute, index, base, spread) {
+        "use strict";
 
-        var r = base.r + ( Math.random() * spread.x ),
-            g = base.g + ( Math.random() * spread.y ),
-            b = base.b + ( Math.random() * spread.z );
+        let r = base.r + Math.random() * spread.x;
+        let g = base.g + Math.random() * spread.y;
+        let b = base.b + Math.random() * spread.z;
 
-        r = this.clamp( r, 0, 1 );
-        g = this.clamp( g, 0, 1 );
-        b = this.clamp( b, 0, 1 );
+        r = this.clamp(r, 0, 1);
+        g = this.clamp(g, 0, 1);
+        b = this.clamp(b, 0, 1);
 
-
-        attribute.typedArray.setVec3Components( index, r, g, b );
+        attribute.typedArray.setVec3Components(index, r, g, b);
     },
 
+    randomColorAsHex: (function () {
+        "use strict";
 
-    randomColorAsHex: ( function() {
-        'use strict';
-
-        var workingColor = new THREE.Color();
+        let workingColor = new THREE.Color();
 
         /**
          * Assigns a random color value, encoded as a hex value in decimal
@@ -1583,29 +1559,29 @@ SPE.utils = {
          * @param  {Object} base      THREE.Color instance describing the start color.
          * @param  {Object} spread    THREE.Vector3 instance describing the random variance to apply to the start color.
          */
-        return function( attribute, index, base, spread ) {
-            var numItems = base.length,
-                colors = [];
+        return function (attribute, index, base, spread) {
+            let numItems = base.length;
+            let colors = [];
 
-            for ( var i = 0; i < numItems; ++i ) {
-                var spreadVector = spread[ i ];
+            for (let i = 0; i < numItems; ++i) {
+                let spreadVector = spread[i];
 
-                workingColor.copy( base[ i ] );
+                workingColor.copy(base[i]);
 
-                workingColor.r += ( Math.random() * spreadVector.x ) - ( spreadVector.x * 0.5 );
-                workingColor.g += ( Math.random() * spreadVector.y ) - ( spreadVector.y * 0.5 );
-                workingColor.b += ( Math.random() * spreadVector.z ) - ( spreadVector.z * 0.5 );
+                workingColor.r += Math.random() * spreadVector.x - spreadVector.x * 0.5;
+                workingColor.g += Math.random() * spreadVector.y - spreadVector.y * 0.5;
+                workingColor.b += Math.random() * spreadVector.z - spreadVector.z * 0.5;
 
-                workingColor.r = this.clamp( workingColor.r, 0, 1 );
-                workingColor.g = this.clamp( workingColor.g, 0, 1 );
-                workingColor.b = this.clamp( workingColor.b, 0, 1 );
+                workingColor.r = this.clamp(workingColor.r, 0, 1);
+                workingColor.g = this.clamp(workingColor.g, 0, 1);
+                workingColor.b = this.clamp(workingColor.b, 0, 1);
 
-                colors.push( workingColor.getHex() );
+                colors.push(workingColor.getHex());
             }
 
-            attribute.typedArray.setVec4Components( index, colors[ 0 ], colors[ 1 ], colors[ 2 ], colors[ 3 ] );
+            attribute.typedArray.setVec4Components(index, colors[0], colors[1], colors[2], colors[3]);
         };
-    }() ),
+    })(),
 
     /**
      * Given an SPE.ShaderAttribute instance, and various other settings,
@@ -1616,13 +1592,13 @@ SPE.utils = {
      * @param  {Object} start       THREE.Vector3 instance describing the start line position.
      * @param  {Object} end         THREE.Vector3 instance describing the end line position.
      */
-    randomVector3OnLine: function( attribute, index, start, end ) {
-        'use strict';
-        var pos = start.clone();
+    randomVector3OnLine: function (attribute, index, start, end) {
+        "use strict";
+        let pos = start.clone();
 
-        pos.lerp( end, Math.random() );
+        pos.lerp(end, Math.random());
 
-        attribute.typedArray.setVec3Components( index, pos.x, pos.y, pos.z );
+        attribute.typedArray.setVec3Components(index, pos.x, pos.y, pos.z);
     },
 
     /**
@@ -1646,29 +1622,33 @@ SPE.utils = {
      * @param  {Object} radiusScale       THREE.Vector3 instance describing the scale of each axis of the sphere.
      * @param  {Number} radiusSpreadClamp What numeric multiple the projected value should be clamped to.
      */
-    randomVector3OnSphere: function(
-        attribute, index, base, radius, radiusSpread, radiusScale, radiusSpreadClamp, distributionClamp
+    randomVector3OnSphere: function (
+        attribute,
+        index,
+        base,
+        radius,
+        radiusSpread,
+        radiusScale,
+        radiusSpreadClamp,
+        distributionClamp
     ) {
-        'use strict';
+        "use strict";
 
-        var depth = 2 * Math.random() - 1,
-            t = 6.2832 * Math.random(),
-            r = Math.sqrt( 1 - depth * depth ),
-            rand = this.randomFloat( radius, radiusSpread ),
-            x = 0,
-            y = 0,
-            z = 0;
+        let depth = 2 * Math.random() - 1;
+        let t = 6.2832 * Math.random();
+        let r = Math.sqrt(1 - depth * depth);
+        let rand = this.randomFloat(radius, radiusSpread);
+        let x = 0;
+        let y = 0;
+        let z = 0;
 
-
-        if ( radiusSpreadClamp ) {
-            rand = Math.round( rand / radiusSpreadClamp ) * radiusSpreadClamp;
+        if (radiusSpreadClamp) {
+            rand = Math.round(rand / radiusSpreadClamp) * radiusSpreadClamp;
         }
 
-
-
         // Set position on sphere
-        x = r * Math.cos( t ) * rand;
-        y = r * Math.sin( t ) * rand;
+        x = r * Math.cos(t) * rand;
+        y = r * Math.sin(t) * rand;
         z = depth * rand;
 
         // Apply radius scale to this position
@@ -1682,15 +1662,13 @@ SPE.utils = {
         z += base.z;
 
         // Set the values in the typed array.
-        attribute.typedArray.setVec3Components( index, x, y, z );
+        attribute.typedArray.setVec3Components(index, x, y, z);
     },
 
-    seededRandom: function( seed ) {
-        var x = Math.sin( seed ) * 10000;
-        return x - ( x | 0 );
+    seededRandom: function (seed) {
+        let x = Math.sin(seed) * 10000;
+        return x - (x | 0);
     },
-
-
 
     /**
      * Assigns a random vector 3 value to an SPE.ShaderAttribute instance, projecting the
@@ -1704,22 +1682,22 @@ SPE.utils = {
      * @param  {Object} radiusScale       THREE.Vector3 instance describing the scale of each axis of the disc. The z-component is ignored.
      * @param  {Number} radiusSpreadClamp What numeric multiple the projected value should be clamped to.
      */
-    randomVector3OnDisc: function( attribute, index, base, radius, radiusSpread, radiusScale, radiusSpreadClamp ) {
-        'use strict';
+    randomVector3OnDisc: function (attribute, index, base, radius, radiusSpread, radiusScale, radiusSpreadClamp) {
+        "use strict";
 
-        var t = 6.2832 * Math.random(),
-            rand = Math.abs( this.randomFloat( radius, radiusSpread ) ),
-            x = 0,
-            y = 0,
-            z = 0;
+        let t = 6.2832 * Math.random();
+        let rand = Math.abs(this.randomFloat(radius, radiusSpread));
+        let x = 0;
+        let y = 0;
+        let z = 0;
 
-        if ( radiusSpreadClamp ) {
-            rand = Math.round( rand / radiusSpreadClamp ) * radiusSpreadClamp;
+        if (radiusSpreadClamp) {
+            rand = Math.round(rand / radiusSpreadClamp) * radiusSpreadClamp;
         }
 
         // Set position on sphere
-        x = Math.cos( t ) * rand;
-        y = Math.sin( t ) * rand;
+        x = Math.cos(t) * rand;
+        y = Math.sin(t) * rand;
 
         // Apply radius scale to this position
         x *= radiusScale.x;
@@ -1731,45 +1709,13 @@ SPE.utils = {
         z += base.z;
 
         // Set the values in the typed array.
-        attribute.typedArray.setVec3Components( index, x, y, z );
+        attribute.typedArray.setVec3Components(index, x, y, z);
     },
 
-    randomDirectionVector3OnSphere: ( function() {
-        'use strict';
+    randomDirectionVector3OnSphere: (function () {
+        "use strict";
 
-        var v = new THREE.Vector3();
-
-        /**
-         * Given an SPE.ShaderAttribute instance, create a direction vector from the given
-         * position, using `speed` as the magnitude. Values are saved to the attribute.
-         *
-         * @param  {Object} attribute       The instance of SPE.ShaderAttribute to save the result to.
-         * @param  {Number} index           The offset in the attribute's TypedArray to save the result from.
-         * @param  {Number} posX            The particle's x coordinate.
-         * @param  {Number} posY            The particle's y coordinate.
-         * @param  {Number} posZ            The particle's z coordinate.
-         * @param  {Object} emitterPosition THREE.Vector3 instance describing the emitter's base position.
-         * @param  {Number} speed           The magnitude to apply to the vector.
-         * @param  {Number} speedSpread     The amount of randomness to apply to the magnitude.
-         */
-        return function( attribute, index, posX, posY, posZ, emitterPosition, speed, speedSpread ) {
-            v.copy( emitterPosition );
-
-            v.x -= posX;
-            v.y -= posY;
-            v.z -= posZ;
-
-            v.normalize().multiplyScalar( -this.randomFloat( speed, speedSpread ) );
-
-            attribute.typedArray.setVec3Components( index, v.x, v.y, v.z );
-        };
-    }() ),
-
-
-    randomDirectionVector3OnDisc: ( function() {
-        'use strict';
-
-        var v = new THREE.Vector3();
+        let v = new THREE.Vector3();
 
         /**
          * Given an SPE.ShaderAttribute instance, create a direction vector from the given
@@ -1784,26 +1730,57 @@ SPE.utils = {
          * @param  {Number} speed           The magnitude to apply to the vector.
          * @param  {Number} speedSpread     The amount of randomness to apply to the magnitude.
          */
-        return function( attribute, index, posX, posY, posZ, emitterPosition, speed, speedSpread ) {
-            v.copy( emitterPosition );
+        return function (attribute, index, posX, posY, posZ, emitterPosition, speed, speedSpread) {
+            v.copy(emitterPosition);
 
             v.x -= posX;
             v.y -= posY;
             v.z -= posZ;
 
-            v.normalize().multiplyScalar( -this.randomFloat( speed, speedSpread ) );
+            v.normalize().multiplyScalar(-this.randomFloat(speed, speedSpread));
 
-            attribute.typedArray.setVec3Components( index, v.x, v.y, 0 );
+            attribute.typedArray.setVec3Components(index, v.x, v.y, v.z);
         };
-    }() ),
+    })(),
 
-    getPackedRotationAxis: ( function() {
-        'use strict';
+    randomDirectionVector3OnDisc: (function () {
+        "use strict";
 
-        var v = new THREE.Vector3(),
-            vSpread = new THREE.Vector3(),
-            c = new THREE.Color(),
-            addOne = new THREE.Vector3( 1, 1, 1 );
+        let v = new THREE.Vector3();
+
+        /**
+         * Given an SPE.ShaderAttribute instance, create a direction vector from the given
+         * position, using `speed` as the magnitude. Values are saved to the attribute.
+         *
+         * @param  {Object} attribute       The instance of SPE.ShaderAttribute to save the result to.
+         * @param  {Number} index           The offset in the attribute's TypedArray to save the result from.
+         * @param  {Number} posX            The particle's x coordinate.
+         * @param  {Number} posY            The particle's y coordinate.
+         * @param  {Number} posZ            The particle's z coordinate.
+         * @param  {Object} emitterPosition THREE.Vector3 instance describing the emitter's base position.
+         * @param  {Number} speed           The magnitude to apply to the vector.
+         * @param  {Number} speedSpread     The amount of randomness to apply to the magnitude.
+         */
+        return function (attribute, index, posX, posY, posZ, emitterPosition, speed, speedSpread) {
+            v.copy(emitterPosition);
+
+            v.x -= posX;
+            v.y -= posY;
+            v.z -= posZ;
+
+            v.normalize().multiplyScalar(-this.randomFloat(speed, speedSpread));
+
+            attribute.typedArray.setVec3Components(index, v.x, v.y, 0);
+        };
+    })(),
+
+    getPackedRotationAxis: (function () {
+        "use strict";
+
+        let v = new THREE.Vector3();
+        let vSpread = new THREE.Vector3();
+        let c = new THREE.Color();
+        let addOne = new THREE.Vector3(1, 1, 1);
 
         /**
          * Given a rotation axis, and a rotation axis spread vector,
@@ -1813,25 +1790,25 @@ SPE.utils = {
          * @param  {Object} axisSpread THREE.Vector3 instance describing the amount of randomness to apply to the rotation axis.
          * @return {Number}            The packed rotation axis, with randomness.
          */
-        return function( axis, axisSpread ) {
-            v.copy( axis ).normalize();
-            vSpread.copy( axisSpread ).normalize();
+        return function (axis, axisSpread) {
+            v.copy(axis).normalize();
+            vSpread.copy(axisSpread).normalize();
 
-            v.x += ( -axisSpread.x * 0.5 ) + ( Math.random() * axisSpread.x );
-            v.y += ( -axisSpread.y * 0.5 ) + ( Math.random() * axisSpread.y );
-            v.z += ( -axisSpread.z * 0.5 ) + ( Math.random() * axisSpread.z );
+            v.x += -axisSpread.x * 0.5 + Math.random() * axisSpread.x;
+            v.y += -axisSpread.y * 0.5 + Math.random() * axisSpread.y;
+            v.z += -axisSpread.z * 0.5 + Math.random() * axisSpread.z;
 
             // v.x = Math.abs( v.x );
             // v.y = Math.abs( v.y );
             // v.z = Math.abs( v.z );
 
-            v.normalize().add( addOne ).multiplyScalar( 0.5 );
+            v.normalize().add(addOne).multiplyScalar(0.5);
 
-            c.setRGB( v.x, v.y, v.z );
+            c.setRGB(v.x, v.y, v.z);
 
             return c.getHex();
         };
-    }() )
+    })(),
 };
 
 
@@ -1887,52 +1864,54 @@ SPE.utils = {
  *                          setting particle sizes to be relative to renderer size.
  */
 
-
 /**
  * The SPE.Group class. Creates a new group, containing a material, geometry, and mesh.
  *
  * @constructor
  * @param {GroupOptions} options A map of options to configure the group instance.
  */
-SPE.Group = function( options ) {
-    'use strict';
+SPE.Group = function (options) {
+    "use strict";
 
-    var utils = SPE.utils,
-        types = utils.types;
+    let utils = SPE.utils;
+    let types = utils.types;
 
     // Ensure we have a map of options to play with
-    options = utils.ensureTypedArg( options, types.OBJECT, {} );
-    options.texture = utils.ensureTypedArg( options.texture, types.OBJECT, {} );
+    options = utils.ensureTypedArg(options, types.OBJECT, {});
+    options.texture = utils.ensureTypedArg(options.texture, types.OBJECT, {});
 
     // Assign a UUID to this instance
     this.uuid = THREE.Math.generateUUID();
 
     // If no `deltaTime` value is passed to the `SPE.Group.tick` function,
     // the value of this property will be used to advance the simulation.
-    this.fixedTimeStep = utils.ensureTypedArg( options.fixedTimeStep, types.NUMBER, 0.016 );
+    this.fixedTimeStep = utils.ensureTypedArg(options.fixedTimeStep, types.NUMBER, 0.016);
 
     // Set properties used in the uniforms map, starting with the
     // texture stuff.
-    this.texture = utils.ensureInstanceOf( options.texture.value, THREE.Texture, null );
-    this.textureFrames = utils.ensureInstanceOf( options.texture.frames, THREE.Vector2, new THREE.Vector2( 1, 1 ) );
-    this.textureFrameCount = utils.ensureTypedArg( options.texture.frameCount, types.NUMBER, this.textureFrames.x * this.textureFrames.y );
-    this.textureLoop = utils.ensureTypedArg( options.texture.loop, types.NUMBER, 1 );
-    this.textureFrames.max( new THREE.Vector2( 1, 1 ) );
+    this.texture = utils.ensureInstanceOf(options.texture.value, THREE.Texture, null);
+    this.textureFrames = utils.ensureInstanceOf(options.texture.frames, THREE.Vector2, new THREE.Vector2(1, 1));
+    this.textureFrameCount = utils.ensureTypedArg(
+        options.texture.frameCount,
+        types.NUMBER,
+        this.textureFrames.x * this.textureFrames.y
+    );
+    this.textureLoop = utils.ensureTypedArg(options.texture.loop, types.NUMBER, 1);
+    this.textureFrames.max(new THREE.Vector2(1, 1));
 
-    this.hasPerspective = utils.ensureTypedArg( options.hasPerspective, types.BOOLEAN, true );
-    this.colorize = utils.ensureTypedArg( options.colorize, types.BOOLEAN, true );
+    this.hasPerspective = utils.ensureTypedArg(options.hasPerspective, types.BOOLEAN, true);
+    this.colorize = utils.ensureTypedArg(options.colorize, types.BOOLEAN, true);
 
-    this.maxParticleCount = utils.ensureTypedArg( options.maxParticleCount, types.NUMBER, null );
-
+    this.maxParticleCount = utils.ensureTypedArg(options.maxParticleCount, types.NUMBER, null);
 
     // Set properties used to define the ShaderMaterial's appearance.
-    this.blending = utils.ensureTypedArg( options.blending, types.NUMBER, THREE.AdditiveBlending );
-    this.transparent = utils.ensureTypedArg( options.transparent, types.BOOLEAN, true );
-    this.alphaTest = parseFloat( utils.ensureTypedArg( options.alphaTest, types.NUMBER, 0.0 ) );
-    this.depthWrite = utils.ensureTypedArg( options.depthWrite, types.BOOLEAN, false );
-    this.depthTest = utils.ensureTypedArg( options.depthTest, types.BOOLEAN, true );
-    this.fog = utils.ensureTypedArg( options.fog, types.BOOLEAN, true );
-    this.scale = utils.ensureTypedArg( options.scale, types.NUMBER, 300 );
+    this.blending = utils.ensureTypedArg(options.blending, types.NUMBER, THREE.AdditiveBlending);
+    this.transparent = utils.ensureTypedArg(options.transparent, types.BOOLEAN, true);
+    this.alphaTest = parseFloat(utils.ensureTypedArg(options.alphaTest, types.NUMBER, 0.0));
+    this.depthWrite = utils.ensureTypedArg(options.depthWrite, types.BOOLEAN, false);
+    this.depthTest = utils.ensureTypedArg(options.depthTest, types.BOOLEAN, true);
+    this.fog = utils.ensureTypedArg(options.fog, types.BOOLEAN, true);
+    this.scale = utils.ensureTypedArg(options.scale, types.NUMBER, 300);
 
     // Where emitter's go to curl up in a warm blanket and live
     // out their days.
@@ -1953,50 +1932,49 @@ SPE.Group = function( options ) {
 
     this.particleCount = 0;
 
-
     // Map of uniforms to be applied to the ShaderMaterial instance.
     this.uniforms = {
         tex: {
-            type: 't',
-            value: this.texture
+            type: "t",
+            value: this.texture,
         },
         textureAnimation: {
-            type: 'v4',
+            type: "v4",
             value: new THREE.Vector4(
                 this.textureFrames.x,
                 this.textureFrames.y,
                 this.textureFrameCount,
-                Math.max( Math.abs( this.textureLoop ), 1.0 )
-            )
+                Math.max(Math.abs(this.textureLoop), 1.0)
+            ),
         },
         fogColor: {
-            type: 'c',
-            value: this.fog ? new THREE.Color() : null
+            type: "c",
+            value: this.fog ? new THREE.Color() : null,
         },
         fogNear: {
-            type: 'f',
-            value: 10
+            type: "f",
+            value: 10,
         },
         fogFar: {
-            type: 'f',
-            value: 200
+            type: "f",
+            value: 200,
         },
         fogDensity: {
-            type: 'f',
-            value: 0.5
+            type: "f",
+            value: 0.5,
         },
         deltaTime: {
-            type: 'f',
-            value: 0
+            type: "f",
+            value: 0,
         },
         runTime: {
-            type: 'f',
-            value: 0
+            type: "f",
+            value: 0,
         },
         scale: {
-            type: 'f',
-            value: this.scale
-        }
+            type: "f",
+            value: this.scale,
+        },
     };
 
     // Add some defines into the mix...
@@ -2009,31 +1987,31 @@ SPE.Group = function( options ) {
         SHOULD_ROTATE_PARTICLES: false,
         SHOULD_WIGGLE_PARTICLES: false,
 
-        SHOULD_CALCULATE_SPRITE: this.textureFrames.x > 1 || this.textureFrames.y > 1
+        SHOULD_CALCULATE_SPRITE: this.textureFrames.x > 1 || this.textureFrames.y > 1,
     };
 
     // Map of all attributes to be applied to the particles.
     //
     // See SPE.ShaderAttribute for a bit more info on this bit.
     this.attributes = {
-        position: new SPE.ShaderAttribute( 'v3', true ),
-        acceleration: new SPE.ShaderAttribute( 'v4', true ), // w component is drag
-        velocity: new SPE.ShaderAttribute( 'v3', true ),
-        rotation: new SPE.ShaderAttribute( 'v4', true ),
-        rotationCenter: new SPE.ShaderAttribute( 'v3', true ),
-        params: new SPE.ShaderAttribute( 'v4', true ), // Holds (alive, age, delay, wiggle)
-        size: new SPE.ShaderAttribute( 'v4', true ),
-        angle: new SPE.ShaderAttribute( 'v4', true ),
-        color: new SPE.ShaderAttribute( 'v4', true ),
-        opacity: new SPE.ShaderAttribute( 'v4', true )
+        position: new SPE.ShaderAttribute("v3", true),
+        acceleration: new SPE.ShaderAttribute("v4", true), // w component is drag
+        velocity: new SPE.ShaderAttribute("v3", true),
+        rotation: new SPE.ShaderAttribute("v4", true),
+        rotationCenter: new SPE.ShaderAttribute("v3", true),
+        params: new SPE.ShaderAttribute("v4", true), // Holds (alive, age, delay, wiggle)
+        size: new SPE.ShaderAttribute("v4", true),
+        angle: new SPE.ShaderAttribute("v4", true),
+        color: new SPE.ShaderAttribute("v4", true),
+        opacity: new SPE.ShaderAttribute("v4", true),
     };
 
-    this.attributeKeys = Object.keys( this.attributes );
+    this.attributeKeys = Object.keys(this.attributes);
     this.attributeCount = this.attributeKeys.length;
 
     // Create the ShaderMaterial instance that'll help render the
     // particles.
-    this.material = new THREE.ShaderMaterial( {
+    this.material = new THREE.ShaderMaterial({
         uniforms: this.uniforms,
         vertexShader: SPE.shaders.vertex,
         fragmentShader: SPE.shaders.fragment,
@@ -2043,85 +2021,81 @@ SPE.Group = function( options ) {
         depthWrite: this.depthWrite,
         depthTest: this.depthTest,
         defines: this.defines,
-        fog: this.fog
-    } );
+        fog: this.fog,
+    });
 
     // Create the BufferGeometry and Points instances, ensuring
     // the geometry and material are given to the latter.
     this.geometry = new THREE.BufferGeometry();
-    this.mesh = new THREE.Points( this.geometry, this.material );
+    this.mesh = new THREE.Points(this.geometry, this.material);
 
-    if ( this.maxParticleCount === null ) {
-        console.warn( 'SPE.Group: No maxParticleCount specified. Adding emitters after rendering will probably cause errors.' );
+    if (this.maxParticleCount === null) {
+        console.warn(
+            "SPE.Group: No maxParticleCount specified. Adding emitters after rendering will probably cause errors."
+        );
     }
 };
 
 SPE.Group.constructor = SPE.Group;
 
+SPE.Group.prototype._updateDefines = function () {
+    "use strict";
 
-SPE.Group.prototype._updateDefines = function() {
-    'use strict';
+    let emitters = this.emitters;
+    let i = emitters.length - 1;
+    let emitter;
+    let defines = this.defines;
 
-    var emitters = this.emitters,
-        i = emitters.length - 1,
-        emitter,
-        defines = this.defines;
-
-    for ( i; i >= 0; --i ) {
-        emitter = emitters[ i ];
+    for (i; i >= 0; --i) {
+        emitter = emitters[i];
 
         // Only do angle calculation if there's no spritesheet defined.
         //
         // Saves calculations being done and then overwritten in the shaders.
-        if ( !defines.SHOULD_CALCULATE_SPRITE ) {
-            defines.SHOULD_ROTATE_TEXTURE = defines.SHOULD_ROTATE_TEXTURE || !!Math.max(
-                Math.max.apply( null, emitter.angle.value ),
-                Math.max.apply( null, emitter.angle.spread )
-            );
+        if (!defines.SHOULD_CALCULATE_SPRITE) {
+            defines.SHOULD_ROTATE_TEXTURE =
+                defines.SHOULD_ROTATE_TEXTURE ||
+                !!Math.max(Math.max.apply(null, emitter.angle.value), Math.max.apply(null, emitter.angle.spread));
         }
 
-        defines.SHOULD_ROTATE_PARTICLES = defines.SHOULD_ROTATE_PARTICLES || !!Math.max(
-            emitter.rotation.angle,
-            emitter.rotation.angleSpread
-        );
+        defines.SHOULD_ROTATE_PARTICLES =
+            defines.SHOULD_ROTATE_PARTICLES || !!Math.max(emitter.rotation.angle, emitter.rotation.angleSpread);
 
-        defines.SHOULD_WIGGLE_PARTICLES = defines.SHOULD_WIGGLE_PARTICLES || !!Math.max(
-            emitter.wiggle.value,
-            emitter.wiggle.spread
-        );
+        defines.SHOULD_WIGGLE_PARTICLES =
+            defines.SHOULD_WIGGLE_PARTICLES || !!Math.max(emitter.wiggle.value, emitter.wiggle.spread);
     }
 
     this.material.needsUpdate = true;
 };
 
-SPE.Group.prototype._applyAttributesToGeometry = function() {
-    'use strict';
+SPE.Group.prototype._applyAttributesToGeometry = function () {
+    "use strict";
 
-    var attributes = this.attributes,
-        geometry = this.geometry,
-        geometryAttributes = geometry.attributes,
-        attribute,
-        geometryAttribute;
+    let attributes = this.attributes;
+    let geometry = this.geometry;
+    let geometryAttributes = geometry.attributes;
+    let attribute;
+    let geometryAttribute;
 
     // Loop through all the shader attributes and assign (or re-assign)
     // typed array buffers to each one.
-    for ( var attr in attributes ) {
-        if ( attributes.hasOwnProperty( attr ) ) {
-            attribute = attributes[ attr ];
-            geometryAttribute = geometryAttributes[ attr ];
+    for (let attr in attributes) {
+        if (attributes.hasOwnProperty(attr)) {
+            attribute = attributes[attr];
+            geometryAttribute = geometryAttributes[attr];
 
             // Update the array if this attribute exists on the geometry.
             //
             // This needs to be done because the attribute's typed array might have
             // been resized and reinstantiated, and might now be looking at a
             // different ArrayBuffer, so reference needs updating.
-            if ( geometryAttribute ) {
+            if (geometryAttribute) {
                 geometryAttribute.array = attribute.typedArray.array;
             }
 
             // // Add the attribute to the geometry if it doesn't already exist.
             else {
-                geometry.setAttribute( attr, attribute.bufferAttribute );
+                geometry.setAttribute(attr, attribute.bufferAttribute);
             }
 
             // Mark the attribute as needing an update the next time a frame is rendered.
@@ -2133,7 +2107,7 @@ SPE.Group.prototype._applyAttributesToGeometry = function() {
     // only the values in the attribute buffers that are
     // associated with a particle will be used in THREE's
     // render cycle.
-    this.geometry.setDrawRange( 0, this.particleCount );
+    this.geometry.setDrawRange(0, this.particleCount);
 };
 
 /**
@@ -2142,54 +2116,58 @@ SPE.Group.prototype._applyAttributesToGeometry = function() {
  *
  * @param {Emitter} emitter The emitter to add to this group.
  */
-SPE.Group.prototype.addEmitter = function( emitter ) {
-    'use strict';
+SPE.Group.prototype.addEmitter = function (emitter) {
+    "use strict";
 
     // Ensure an actual emitter instance is passed here.
     //
     // Decided not to throw here, just in case a scene's
     // rendering would be paused. Logging an error instead
     // of stopping execution if exceptions aren't caught.
-    if ( emitter instanceof SPE.Emitter === false ) {
-        console.error( '`emitter` argument must be instance of SPE.Emitter. Was provided with:', emitter );
+    if (emitter instanceof SPE.Emitter === false) {
+        console.error("`emitter` argument must be instance of SPE.Emitter. Was provided with:", emitter);
         return;
     }
 
     // If the emitter already exists as a member of this group, then
     // stop here, we don't want to add it again.
-    else if ( this.emitterIDs.indexOf( emitter.uuid ) > -1 ) {
-        console.error( 'Emitter already exists in this group. Will not add again.' );
+    else if (this.emitterIDs.indexOf(emitter.uuid) > -1) {
+        console.error("Emitter already exists in this group. Will not add again.");
         return;
     }
 
     // And finally, if the emitter is a member of another group,
     // don't add it to this group.
-    else if ( emitter.group !== null ) {
-        console.error( 'Emitter already belongs to another group. Will not add to requested group.' );
+    else if (emitter.group !== null) {
+        console.error("Emitter already belongs to another group. Will not add to requested group.");
         return;
     }
 
-    var attributes = this.attributes,
-        start = this.particleCount,
-        end = start + emitter.particleCount;
+    let attributes = this.attributes;
+    let start = this.particleCount;
+    let end = start + emitter.particleCount;
 
     // Update this group's particle count.
     this.particleCount = end;
 
     // Emit a warning if the emitter being added will exceed the buffer sizes specified.
-    if ( this.maxParticleCount !== null && this.particleCount > this.maxParticleCount ) {
-        console.warn( 'SPE.Group: maxParticleCount exceeded. Requesting', this.particleCount, 'particles, can support only', this.maxParticleCount );
+    if (this.maxParticleCount !== null && this.particleCount > this.maxParticleCount) {
+        console.warn(
+            "SPE.Group: maxParticleCount exceeded. Requesting",
+            this.particleCount,
+            "particles, can support only",
+            this.maxParticleCount
+        );
     }
-
 
     // Set the `particlesPerSecond` value (PPS) on the emitter.
     // It's used to determine how many particles to release
     // on a per-frame basis.
-    emitter._calculatePPSValue( emitter.maxAge._value + emitter.maxAge._spread );
-    emitter._setBufferUpdateRanges( this.attributeKeys );
+    emitter._calculatePPSValue(emitter.maxAge._value + emitter.maxAge._spread);
+    emitter._setBufferUpdateRanges(this.attributeKeys);
 
     // Store the offset value in the TypedArray attributes for this emitter.
-    emitter._setAttributeOffset( start );
+    emitter._setAttributeOffset(start);
 
     // Save a reference to this group on the emitter so it knows
     // where it belongs.
@@ -2199,34 +2177,30 @@ SPE.Group.prototype.addEmitter = function( emitter ) {
     // easier access during the emitter's tick function.
     emitter.attributes = this.attributes;
 
-
-
     // Ensure the attributes and their BufferAttributes exist, and their
     // TypedArrays are of the correct size.
-    for ( var attr in attributes ) {
-        if ( attributes.hasOwnProperty( attr ) ) {
+    for (let attr in attributes) {
+        if (attributes.hasOwnProperty(attr)) {
             // When creating a buffer, pass through the maxParticle count
             // if one is specified.
-            attributes[ attr ]._createBufferAttribute(
-                this.maxParticleCount !== null ?
-                this.maxParticleCount :
-                this.particleCount
+            attributes[attr]._createBufferAttribute(
+                this.maxParticleCount !== null ? this.maxParticleCount : this.particleCount
             );
         }
     }
 
     // Loop through each particle this emitter wants to have, and create the attributes values,
     // storing them in the TypedArrays that each attribute holds.
-    for ( var i = start; i < end; ++i ) {
-        emitter._assignPositionValue( i );
-        emitter._assignForceValue( i, 'velocity' );
-        emitter._assignForceValue( i, 'acceleration' );
-        emitter._assignAbsLifetimeValue( i, 'opacity' );
-        emitter._assignAbsLifetimeValue( i, 'size' );
-        emitter._assignAngleValue( i );
-        emitter._assignRotationValue( i );
-        emitter._assignParamsValue( i );
-        emitter._assignColorValue( i );
+    for (let i = start; i < end; ++i) {
+        emitter._assignPositionValue(i);
+        emitter._assignForceValue(i, "velocity");
+        emitter._assignForceValue(i, "acceleration");
+        emitter._assignAbsLifetimeValue(i, "opacity");
+        emitter._assignAbsLifetimeValue(i, "size");
+        emitter._assignAngleValue(i);
+        emitter._assignRotationValue(i);
+        emitter._assignParamsValue(i);
+        emitter._assignColorValue(i);
     }
 
     // Update the geometry and make sure the attributes are referencing
@@ -2234,11 +2208,11 @@ SPE.Group.prototype.addEmitter = function( emitter ) {
     this._applyAttributesToGeometry();
 
     // Store this emitter in this group's emitter's store.
-    this.emitters.push( emitter );
-    this.emitterIDs.push( emitter.uuid );
+    this.emitters.push(emitter);
+    this.emitterIDs.push(emitter.uuid);
 
     // Update certain flags to enable shader calculations only if they're necessary.
-    this._updateDefines( emitter );
+    this._updateDefines(emitter);
 
     // Update the material since defines might have changed
     this.material.needsUpdate = true;
@@ -2256,49 +2230,49 @@ SPE.Group.prototype.addEmitter = function( emitter ) {
  *
  * @param {Emitter} emitter The emitter to add to this group.
  */
-SPE.Group.prototype.removeEmitter = function( emitter ) {
-    'use strict';
+SPE.Group.prototype.removeEmitter = function (emitter) {
+    "use strict";
 
-    var emitterIndex = this.emitterIDs.indexOf( emitter.uuid );
+    let emitterIndex = this.emitterIDs.indexOf(emitter.uuid);
 
     // Ensure an actual emitter instance is passed here.
     //
     // Decided not to throw here, just in case a scene's
     // rendering would be paused. Logging an error instead
     // of stopping execution if exceptions aren't caught.
-    if ( emitter instanceof SPE.Emitter === false ) {
-        console.error( '`emitter` argument must be instance of SPE.Emitter. Was provided with:', emitter );
+    if (emitter instanceof SPE.Emitter === false) {
+        console.error("`emitter` argument must be instance of SPE.Emitter. Was provided with:", emitter);
         return;
     }
 
     // Issue an error if the emitter isn't a member of this group.
-    else if ( emitterIndex === -1 ) {
-        console.error( 'Emitter does not exist in this group. Will not remove.' );
+    else if (emitterIndex === -1) {
+        console.error("Emitter does not exist in this group. Will not remove.");
         return;
     }
 
     // Kill all particles by marking them as dead
     // and their age as 0.
-    var start = emitter.attributeOffset,
-        end = start + emitter.particleCount,
-        params = this.attributes.params.typedArray;
+    let start = emitter.attributeOffset;
+    let end = start + emitter.particleCount;
+    let params = this.attributes.params.typedArray;
 
     // Set alive and age to zero.
-    for ( var i = start; i < end; ++i ) {
-        params.array[ i * 4 ] = 0.0;
-        params.array[ i * 4 + 1 ] = 0.0;
+    for (let i = start; i < end; ++i) {
+        params.array[i * 4] = 0.0;
+        params.array[i * 4 + 1] = 0.0;
     }
 
     // Remove the emitter from this group's "store".
-    this.emitters.splice( emitterIndex, 1 );
-    this.emitterIDs.splice( emitterIndex, 1 );
+    this.emitters.splice(emitterIndex, 1);
+    this.emitterIDs.splice(emitterIndex, 1);
 
     // Remove this emitter's attribute values from all shader attributes.
     // The `.splice()` call here also marks each attribute's buffer
     // as needing to update it's entire contents.
-    for ( var attr in this.attributes ) {
-        if ( this.attributes.hasOwnProperty( attr ) ) {
-            this.attributes[ attr ].splice( start, end );
+    for (let attr in this.attributes) {
+        if (this.attributes.hasOwnProperty(attr)) {
+            this.attributes[attr].splice(start, end);
         }
     }
 
@@ -2313,7 +2287,6 @@ SPE.Group.prototype.removeEmitter = function( emitter ) {
     this._attributesNeedRefresh = true;
 };
 
-
 /**
  * Fetch a single emitter instance from the pool.
  * If there are no objects in the pool, a new emitter will be
@@ -2321,19 +2294,18 @@ SPE.Group.prototype.removeEmitter = function( emitter ) {
  *
  * @return {Emitter|null}
  */
-SPE.Group.prototype.getFromPool = function() {
-    'use strict';
+SPE.Group.prototype.getFromPool = function () {
+    "use strict";
 
-    var pool = this._pool,
-        createNew = this._createNewWhenPoolEmpty;
+    let pool = this._pool;
+    let createNew = this._createNewWhenPoolEmpty;
 
-    if ( pool.length ) {
+    if (pool.length) {
         return pool.pop();
-    }
-    else if ( createNew ) {
-        var emitter = new SPE.Emitter( this._poolCreationSettings );
+    } else if (createNew) {
+        let emitter = new SPE.Emitter(this._poolCreationSettings);
 
-        this.addEmitter( emitter );
+        this.addEmitter(emitter);
 
         return emitter;
     }
@@ -2341,38 +2313,35 @@ SPE.Group.prototype.getFromPool = function() {
     return null;
 };
 
-
 /**
  * Release an emitter into the pool.
  *
  * @param  {ShaderParticleEmitter} emitter
  * @return {Group} This group instance.
  */
-SPE.Group.prototype.releaseIntoPool = function( emitter ) {
-    'use strict';
+SPE.Group.prototype.releaseIntoPool = function (emitter) {
+    "use strict";
 
-    if ( emitter instanceof SPE.Emitter === false ) {
-        console.error( 'Argument is not instanceof SPE.Emitter:', emitter );
+    if (emitter instanceof SPE.Emitter === false) {
+        console.error("Argument is not instanceof SPE.Emitter:", emitter);
         return;
     }
 
     emitter.reset();
-    this._pool.unshift( emitter );
+    this._pool.unshift(emitter);
 
     return this;
 };
-
 
 /**
  * Get the pool array
  *
  * @return {Array}
  */
-SPE.Group.prototype.getPool = function() {
-    'use strict';
+SPE.Group.prototype.getPool = function () {
+    "use strict";
     return this._pool;
 };
-
 
 /**
  * Add a pool of emitters to this particle group
@@ -2382,47 +2351,44 @@ SPE.Group.prototype.getPool = function() {
  * @param {Boolean} createNew       Should a new emitter be created if the pool runs out?
  * @return {Group} This group instance.
  */
-SPE.Group.prototype.addPool = function( numEmitters, emitterOptions, createNew ) {
-    'use strict';
+SPE.Group.prototype.addPool = function (numEmitters, emitterOptions, createNew) {
+    "use strict";
 
-    var emitter;
+    let emitter;
 
     // Save relevant settings and flags.
     this._poolCreationSettings = emitterOptions;
     this._createNewWhenPoolEmpty = !!createNew;
 
     // Create the emitters, add them to this group and the pool.
-    for ( var i = 0; i < numEmitters; ++i ) {
-        if ( Array.isArray( emitterOptions ) ) {
-            emitter = new SPE.Emitter( emitterOptions[ i ] );
+    for (let i = 0; i < numEmitters; ++i) {
+        if (Array.isArray(emitterOptions)) {
+            emitter = new SPE.Emitter(emitterOptions[i]);
+        } else {
+            emitter = new SPE.Emitter(emitterOptions);
         }
-        else {
-            emitter = new SPE.Emitter( emitterOptions );
-        }
-        this.addEmitter( emitter );
-        this.releaseIntoPool( emitter );
+        this.addEmitter(emitter);
+        this.releaseIntoPool(emitter);
     }
 
     return this;
 };
 
+SPE.Group.prototype._triggerSingleEmitter = function (pos) {
+    "use strict";
 
-
-SPE.Group.prototype._triggerSingleEmitter = function( pos ) {
-    'use strict';
-
-    var emitter = this.getFromPool(),
+    let emitter = this.getFromPool(),
         self = this;
 
-    if ( emitter === null ) {
-        console.log( 'SPE.Group pool ran out.' );
+    if (emitter === null) {
+        console.log("SPE.Group pool ran out.");
         return;
     }
 
     // TODO:
     // - Make sure buffers are update with thus new position.
-    if ( pos instanceof THREE.Vector3 ) {
-        emitter.position.value.copy( pos );
+    if (pos instanceof THREE.Vector3) {
+        emitter.position.value.copy(pos);
 
         // Trigger the setter for this property to force an
         // update to the emitter's position attribute.
@@ -2431,14 +2397,13 @@ SPE.Group.prototype._triggerSingleEmitter = function( pos ) {
 
     emitter.enable();
 
-    setTimeout( function() {
+    setTimeout(function () {
         emitter.disable();
-        self.releaseIntoPool( emitter );
-    }, ( Math.max( emitter.duration, ( emitter.maxAge.value + emitter.maxAge.spread ) ) ) * 1000 );
+        self.releaseIntoPool(emitter);
+    }, Math.max(emitter.duration, emitter.maxAge.value + emitter.maxAge.spread) * 1000);
 
     return this;
 };
-
 
 /**
  * Set a given number of emitters as alive, with an optional position
@@ -2448,113 +2413,101 @@ SPE.Group.prototype._triggerSingleEmitter = function( pos ) {
  * @param  {Object} [position=undefined] A THREE.Vector3 instance describing the position to activate the emitter(s) at.
  * @return {Group} This group instance.
  */
-SPE.Group.prototype.triggerPoolEmitter = function( numEmitters, position ) {
-    'use strict';
+SPE.Group.prototype.triggerPoolEmitter = function (numEmitters, position) {
+    "use strict";
 
-    if ( typeof numEmitters === 'number' && numEmitters > 1 ) {
-        for ( var i = 0; i < numEmitters; ++i ) {
-            this._triggerSingleEmitter( position );
+    if (typeof numEmitters === "number" && numEmitters > 1) {
+        for (let i = 0; i < numEmitters; ++i) {
+            this._triggerSingleEmitter(position);
         }
-    }
-    else {
-        this._triggerSingleEmitter( position );
+    } else {
+        this._triggerSingleEmitter(position);
     }
 
     return this;
 };
 
-
-
-SPE.Group.prototype._updateUniforms = function( dt ) {
-    'use strict';
+SPE.Group.prototype._updateUniforms = function (dt) {
+    "use strict";
 
     this.uniforms.runTime.value += dt;
     this.uniforms.deltaTime.value = dt;
 };
 
-SPE.Group.prototype._resetBufferRanges = function() {
-    'use strict';
+SPE.Group.prototype._resetBufferRanges = function () {
+    "use strict";
 
-    var keys = this.attributeKeys,
-        i = this.attributeCount - 1,
-        attrs = this.attributes;
+    let keys = this.attributeKeys;
+    let i = this.attributeCount - 1;
+    let attrs = this.attributes;
 
-    for ( i; i >= 0; --i ) {
-        attrs[ keys[ i ] ].resetUpdateRange();
+    for (i; i >= 0; --i) {
+        attrs[keys[i]].resetUpdateRange();
     }
 };
 
+SPE.Group.prototype._updateBuffers = function (emitter) {
+    "use strict";
 
-SPE.Group.prototype._updateBuffers = function( emitter ) {
-    'use strict';
+    let keys = this.attributeKeys;
+    let attrs = this.attributes;
+    let emitterRanges = emitter.bufferUpdateRanges;
+    let key;
+    let emitterAttr;
+    let attr;
 
-    var keys = this.attributeKeys,
-        i = this.attributeCount - 1,
-        attrs = this.attributes,
-        emitterRanges = emitter.bufferUpdateRanges,
-        key,
-        emitterAttr,
-        attr;
-
-    for ( i; i >= 0; --i ) {
-        key = keys[ i ];
-        emitterAttr = emitterRanges[ key ];
-        attr = attrs[ key ];
-        attr.setUpdateRange( emitterAttr.min, emitterAttr.max );
+    for (let i = this.attributeCount - 1; i >= 0; --i) {
+        key = keys[i];
+        emitterAttr = emitterRanges[key];
+        attr = attrs[key];
+        attr.setUpdateRange(emitterAttr.min, emitterAttr.max);
         attr.flagUpdate();
     }
 };
-
 
 /**
  * Simulate all the emitter's belonging to this group, updating
  * attribute values along the way.
  * @param  {Number} [dt=Group's `fixedTimeStep` value] The number of seconds to simulate the group's emitters for (deltaTime)
  */
-SPE.Group.prototype.tick = function( dt ) {
-    'use strict';
+SPE.Group.prototype.tick = function (dt) {
+    "use strict";
 
-    var emitters = this.emitters,
-        numEmitters = emitters.length,
-        deltaTime = dt || this.fixedTimeStep,
-        keys = this.attributeKeys,
-        i,
-        attrs = this.attributes;
+    let emitters = this.emitters;
+    let numEmitters = emitters.length;
+    let deltaTime = dt || this.fixedTimeStep;
+    let keys = this.attributeKeys;
+    let i;
+    let attrs = this.attributes;
 
     // Update uniform values.
-    this._updateUniforms( deltaTime );
+    this._updateUniforms(deltaTime);
 
     // Reset buffer update ranges on the shader attributes.
     this._resetBufferRanges();
 
-
     // If nothing needs updating, then stop here.
-    if (
-        numEmitters === 0 &&
-        this._attributesNeedRefresh === false &&
-        this._attributesNeedDynamicReset === false
-    ) {
+    if (numEmitters === 0 && this._attributesNeedRefresh === false && this._attributesNeedDynamicReset === false) {
         return;
     }
 
     // Loop through each emitter in this group and
     // simulate it, then update the shader attribute
     // buffers.
-    for ( var i = 0, emitter; i < numEmitters; ++i ) {
-        emitter = emitters[ i ];
-        emitter.tick( deltaTime );
-        this._updateBuffers( emitter );
+    for (let i = 0, emitter; i < numEmitters; ++i) {
+        emitter = emitters[i];
+        emitter.tick(deltaTime);
+        this._updateBuffers(emitter);
     }
 
     // If the shader attributes have been refreshed,
     // then the dynamic properties of each buffer
     // attribute will need to be reset back to
     // what they should be.
-    if ( this._attributesNeedDynamicReset === true ) {
-        i = this.attributeCount - 1;
+    if (this._attributesNeedDynamicReset === true) {
 
-        for ( i; i >= 0; --i ) {
-            attrs[ keys[ i ] ].resetDynamic();
+        for (let i = this.attributeCount - 1; i >= 0; --i) {
+            attrs[keys[i]].resetDynamic();
         }
 
         this._attributesNeedDynamicReset = false;
@@ -2563,11 +2516,10 @@ SPE.Group.prototype.tick = function( dt ) {
     // If this group's shader attributes need a full refresh
     // then mark each attribute's buffer attribute as
     // needing so.
-    if ( this._attributesNeedRefresh === true ) {
-        i = this.attributeCount - 1;
+    if (this._attributesNeedRefresh === true) {
 
-        for ( i; i >= 0; --i ) {
-            attrs[ keys[ i ] ].forceUpdateAll();
+        for (let i = this.attributeCount - 1; i >= 0; --i) {
+            attrs[keys[i]].forceUpdateAll();
         }
 
         this._attributesNeedRefresh = false;
@@ -2575,14 +2527,13 @@ SPE.Group.prototype.tick = function( dt ) {
     }
 };
 
-
 /**
  * Dipose the geometry and material for the group.
  *
  * @return {Group} Group instance.
  */
-SPE.Group.prototype.dispose = function() {
-    'use strict';
+SPE.Group.prototype.dispose = function () {
+    "use strict";
     this.geometry.dispose();
     this.material.dispose();
     return this;
@@ -2740,132 +2691,127 @@ SPE.Group.prototype.dispose = function() {
  *
  * @param {EmitterOptions} options A map of options to configure the emitter.
  */
-SPE.Emitter = function( options ) {
-    'use strict';
+SPE.Emitter = function (options) {
+    "use strict";
 
-    var utils = SPE.utils,
-        types = utils.types,
-        lifetimeLength = SPE.valueOverLifetimeLength;
+    let utils = SPE.utils;
+    let types = utils.types;
+    let lifetimeLength = SPE.valueOverLifetimeLength;
 
     // Ensure we have a map of options to play with,
     // and that each option is in the correct format.
-    options = utils.ensureTypedArg( options, types.OBJECT, {} );
-    options.position = utils.ensureTypedArg( options.position, types.OBJECT, {} );
-    options.velocity = utils.ensureTypedArg( options.velocity, types.OBJECT, {} );
-    options.acceleration = utils.ensureTypedArg( options.acceleration, types.OBJECT, {} );
-    options.radius = utils.ensureTypedArg( options.radius, types.OBJECT, {} );
-    options.drag = utils.ensureTypedArg( options.drag, types.OBJECT, {} );
-    options.rotation = utils.ensureTypedArg( options.rotation, types.OBJECT, {} );
-    options.color = utils.ensureTypedArg( options.color, types.OBJECT, {} );
-    options.opacity = utils.ensureTypedArg( options.opacity, types.OBJECT, {} );
-    options.size = utils.ensureTypedArg( options.size, types.OBJECT, {} );
-    options.angle = utils.ensureTypedArg( options.angle, types.OBJECT, {} );
-    options.wiggle = utils.ensureTypedArg( options.wiggle, types.OBJECT, {} );
-    options.maxAge = utils.ensureTypedArg( options.maxAge, types.OBJECT, {} );
+    options = utils.ensureTypedArg(options, types.OBJECT, {});
+    options.position = utils.ensureTypedArg(options.position, types.OBJECT, {});
+    options.velocity = utils.ensureTypedArg(options.velocity, types.OBJECT, {});
+    options.acceleration = utils.ensureTypedArg(options.acceleration, types.OBJECT, {});
+    options.radius = utils.ensureTypedArg(options.radius, types.OBJECT, {});
+    options.drag = utils.ensureTypedArg(options.drag, types.OBJECT, {});
+    options.rotation = utils.ensureTypedArg(options.rotation, types.OBJECT, {});
+    options.color = utils.ensureTypedArg(options.color, types.OBJECT, {});
+    options.opacity = utils.ensureTypedArg(options.opacity, types.OBJECT, {});
+    options.size = utils.ensureTypedArg(options.size, types.OBJECT, {});
+    options.angle = utils.ensureTypedArg(options.angle, types.OBJECT, {});
+    options.wiggle = utils.ensureTypedArg(options.wiggle, types.OBJECT, {});
+    options.maxAge = utils.ensureTypedArg(options.maxAge, types.OBJECT, {});
 
-    if ( options.onParticleSpawn ) {
-        console.warn( 'onParticleSpawn has been removed. Please set properties directly to alter values at runtime.' );
+    if (options.onParticleSpawn) {
+        console.warn("onParticleSpawn has been removed. Please set properties directly to alter values at runtime.");
     }
 
     this.uuid = THREE.Math.generateUUID();
 
-    this.type = utils.ensureTypedArg( options.type, types.NUMBER, SPE.distributions.BOX );
+    this.type = utils.ensureTypedArg(options.type, types.NUMBER, SPE.distributions.BOX);
 
     // Start assigning properties...kicking it off with props that DON'T support values over
     // lifetimes.
     //
     // Btw, values over lifetimes are just the new way of referring to *Start, *Middle, and *End.
     this.position = {
-        _value: utils.ensureInstanceOf( options.position.value, THREE.Vector3, new THREE.Vector3() ),
-        _spread: utils.ensureInstanceOf( options.position.spread, THREE.Vector3, new THREE.Vector3() ),
-        _spreadClamp: utils.ensureInstanceOf( options.position.spreadClamp, THREE.Vector3, new THREE.Vector3() ),
-        _distribution: utils.ensureTypedArg( options.position.distribution, types.NUMBER, this.type ),
-        _randomise: utils.ensureTypedArg( options.position.randomise, types.BOOLEAN, false ),
-        _radius: utils.ensureTypedArg( options.position.radius, types.NUMBER, 10 ),
-        _radiusScale: utils.ensureInstanceOf( options.position.radiusScale, THREE.Vector3, new THREE.Vector3( 1, 1, 1 ) ),
-        _distributionClamp: utils.ensureTypedArg( options.position.distributionClamp, types.NUMBER, 0 ),
+        _value: utils.ensureInstanceOf(options.position.value, THREE.Vector3, new THREE.Vector3()),
+        _spread: utils.ensureInstanceOf(options.position.spread, THREE.Vector3, new THREE.Vector3()),
+        _spreadClamp: utils.ensureInstanceOf(options.position.spreadClamp, THREE.Vector3, new THREE.Vector3()),
+        _distribution: utils.ensureTypedArg(options.position.distribution, types.NUMBER, this.type),
+        _randomise: utils.ensureTypedArg(options.position.randomise, types.BOOLEAN, false),
+        _radius: utils.ensureTypedArg(options.position.radius, types.NUMBER, 10),
+        _radiusScale: utils.ensureInstanceOf(options.position.radiusScale, THREE.Vector3, new THREE.Vector3(1, 1, 1)),
+        _distributionClamp: utils.ensureTypedArg(options.position.distributionClamp, types.NUMBER, 0),
     };
 
     this.velocity = {
-        _value: utils.ensureInstanceOf( options.velocity.value, THREE.Vector3, new THREE.Vector3() ),
-        _spread: utils.ensureInstanceOf( options.velocity.spread, THREE.Vector3, new THREE.Vector3() ),
-        _distribution: utils.ensureTypedArg( options.velocity.distribution, types.NUMBER, this.type ),
-        _randomise: utils.ensureTypedArg( options.position.randomise, types.BOOLEAN, false )
+        _value: utils.ensureInstanceOf(options.velocity.value, THREE.Vector3, new THREE.Vector3()),
+        _spread: utils.ensureInstanceOf(options.velocity.spread, THREE.Vector3, new THREE.Vector3()),
+        _distribution: utils.ensureTypedArg(options.velocity.distribution, types.NUMBER, this.type),
+        _randomise: utils.ensureTypedArg(options.position.randomise, types.BOOLEAN, false),
     };
 
     this.acceleration = {
-        _value: utils.ensureInstanceOf( options.acceleration.value, THREE.Vector3, new THREE.Vector3() ),
-        _spread: utils.ensureInstanceOf( options.acceleration.spread, THREE.Vector3, new THREE.Vector3() ),
-        _distribution: utils.ensureTypedArg( options.acceleration.distribution, types.NUMBER, this.type ),
-        _randomise: utils.ensureTypedArg( options.position.randomise, types.BOOLEAN, false )
+        _value: utils.ensureInstanceOf(options.acceleration.value, THREE.Vector3, new THREE.Vector3()),
+        _spread: utils.ensureInstanceOf(options.acceleration.spread, THREE.Vector3, new THREE.Vector3()),
+        _distribution: utils.ensureTypedArg(options.acceleration.distribution, types.NUMBER, this.type),
+        _randomise: utils.ensureTypedArg(options.position.randomise, types.BOOLEAN, false),
     };
 
     this.drag = {
-        _value: utils.ensureTypedArg( options.drag.value, types.NUMBER, 0 ),
-        _spread: utils.ensureTypedArg( options.drag.spread, types.NUMBER, 0 ),
-        _randomise: utils.ensureTypedArg( options.position.randomise, types.BOOLEAN, false )
+        _value: utils.ensureTypedArg(options.drag.value, types.NUMBER, 0),
+        _spread: utils.ensureTypedArg(options.drag.spread, types.NUMBER, 0),
+        _randomise: utils.ensureTypedArg(options.position.randomise, types.BOOLEAN, false),
     };
 
     this.wiggle = {
-        _value: utils.ensureTypedArg( options.wiggle.value, types.NUMBER, 0 ),
-        _spread: utils.ensureTypedArg( options.wiggle.spread, types.NUMBER, 0 )
+        _value: utils.ensureTypedArg(options.wiggle.value, types.NUMBER, 0),
+        _spread: utils.ensureTypedArg(options.wiggle.spread, types.NUMBER, 0),
     };
 
     this.rotation = {
-        _axis: utils.ensureInstanceOf( options.rotation.axis, THREE.Vector3, new THREE.Vector3( 0.0, 1.0, 0.0 ) ),
-        _axisSpread: utils.ensureInstanceOf( options.rotation.axisSpread, THREE.Vector3, new THREE.Vector3() ),
-        _angle: utils.ensureTypedArg( options.rotation.angle, types.NUMBER, 0 ),
-        _angleSpread: utils.ensureTypedArg( options.rotation.angleSpread, types.NUMBER, 0 ),
-        _static: utils.ensureTypedArg( options.rotation.static, types.BOOLEAN, false ),
-        _center: utils.ensureInstanceOf( options.rotation.center, THREE.Vector3, this.position._value.clone() ),
-        _randomise: utils.ensureTypedArg( options.position.randomise, types.BOOLEAN, false )
+        _axis: utils.ensureInstanceOf(options.rotation.axis, THREE.Vector3, new THREE.Vector3(0.0, 1.0, 0.0)),
+        _axisSpread: utils.ensureInstanceOf(options.rotation.axisSpread, THREE.Vector3, new THREE.Vector3()),
+        _angle: utils.ensureTypedArg(options.rotation.angle, types.NUMBER, 0),
+        _angleSpread: utils.ensureTypedArg(options.rotation.angleSpread, types.NUMBER, 0),
+        _static: utils.ensureTypedArg(options.rotation.static, types.BOOLEAN, false),
+        _center: utils.ensureInstanceOf(options.rotation.center, THREE.Vector3, this.position._value.clone()),
+        _randomise: utils.ensureTypedArg(options.position.randomise, types.BOOLEAN, false),
     };
-
 
     this.maxAge = {
-        _value: utils.ensureTypedArg( options.maxAge.value, types.NUMBER, 2 ),
-        _spread: utils.ensureTypedArg( options.maxAge.spread, types.NUMBER, 0 )
+        _value: utils.ensureTypedArg(options.maxAge.value, types.NUMBER, 2),
+        _spread: utils.ensureTypedArg(options.maxAge.spread, types.NUMBER, 0),
     };
-
-
 
     // The following properties can support either single values, or an array of values that change
     // the property over a particle's lifetime (value over lifetime).
     this.color = {
-        _value: utils.ensureArrayInstanceOf( options.color.value, THREE.Color, new THREE.Color() ),
-        _spread: utils.ensureArrayInstanceOf( options.color.spread, THREE.Vector3, new THREE.Vector3() ),
-        _randomise: utils.ensureTypedArg( options.position.randomise, types.BOOLEAN, false )
+        _value: utils.ensureArrayInstanceOf(options.color.value, THREE.Color, new THREE.Color()),
+        _spread: utils.ensureArrayInstanceOf(options.color.spread, THREE.Vector3, new THREE.Vector3()),
+        _randomise: utils.ensureTypedArg(options.position.randomise, types.BOOLEAN, false),
     };
 
     this.opacity = {
-        _value: utils.ensureArrayTypedArg( options.opacity.value, types.NUMBER, 1 ),
-        _spread: utils.ensureArrayTypedArg( options.opacity.spread, types.NUMBER, 0 ),
-        _randomise: utils.ensureTypedArg( options.position.randomise, types.BOOLEAN, false )
+        _value: utils.ensureArrayTypedArg(options.opacity.value, types.NUMBER, 1),
+        _spread: utils.ensureArrayTypedArg(options.opacity.spread, types.NUMBER, 0),
+        _randomise: utils.ensureTypedArg(options.position.randomise, types.BOOLEAN, false),
     };
 
     this.size = {
-        _value: utils.ensureArrayTypedArg( options.size.value, types.NUMBER, 1 ),
-        _spread: utils.ensureArrayTypedArg( options.size.spread, types.NUMBER, 0 ),
-        _randomise: utils.ensureTypedArg( options.position.randomise, types.BOOLEAN, false )
+        _value: utils.ensureArrayTypedArg(options.size.value, types.NUMBER, 1),
+        _spread: utils.ensureArrayTypedArg(options.size.spread, types.NUMBER, 0),
+        _randomise: utils.ensureTypedArg(options.position.randomise, types.BOOLEAN, false),
     };
 
     this.angle = {
-        _value: utils.ensureArrayTypedArg( options.angle.value, types.NUMBER, 0 ),
-        _spread: utils.ensureArrayTypedArg( options.angle.spread, types.NUMBER, 0 ),
-        _randomise: utils.ensureTypedArg( options.position.randomise, types.BOOLEAN, false )
+        _value: utils.ensureArrayTypedArg(options.angle.value, types.NUMBER, 0),
+        _spread: utils.ensureArrayTypedArg(options.angle.spread, types.NUMBER, 0),
+        _randomise: utils.ensureTypedArg(options.position.randomise, types.BOOLEAN, false),
     };
 
-
     // Assign renaining option values.
-    this.particleCount = utils.ensureTypedArg( options.particleCount, types.NUMBER, 100 );
-    this.duration = utils.ensureTypedArg( options.duration, types.NUMBER, null );
-    this.isStatic = utils.ensureTypedArg( options.isStatic, types.BOOLEAN, false );
-    this.activeMultiplier = utils.ensureTypedArg( options.activeMultiplier, types.NUMBER, 1 );
-    this.direction = utils.ensureTypedArg( options.direction, types.NUMBER, 1 );
+    this.particleCount = utils.ensureTypedArg(options.particleCount, types.NUMBER, 100);
+    this.duration = utils.ensureTypedArg(options.duration, types.NUMBER, null);
+    this.isStatic = utils.ensureTypedArg(options.isStatic, types.BOOLEAN, false);
+    this.activeMultiplier = utils.ensureTypedArg(options.activeMultiplier, types.NUMBER, 1);
+    this.direction = utils.ensureTypedArg(options.direction, types.NUMBER, 1);
 
     // Whether this emitter is alive or not.
-    this.alive = utils.ensureTypedArg( options.alive, types.BOOLEAN, true );
-
+    this.alive = utils.ensureTypedArg(options.alive, types.BOOLEAN, true);
 
     // The following properties are set internally and are not
     // user-controllable.
@@ -2881,8 +2827,6 @@ SPE.Emitter = function( options ) {
 
     // The end of the range in the attribute buffers
     this.attributeEnd = 0;
-
-
 
     // Holds the time the emitter has been alive for.
     this.age = 0.0;
@@ -2917,17 +2861,19 @@ SPE.Emitter = function( options ) {
     this.resetFlags = {
         // params: utils.ensureTypedArg( options.maxAge.randomise, types.BOOLEAN, !!options.maxAge.spread ) ||
         //     utils.ensureTypedArg( options.wiggle.randomise, types.BOOLEAN, !!options.wiggle.spread ),
-        position: utils.ensureTypedArg( options.position.randomise, types.BOOLEAN, false ) ||
-            utils.ensureTypedArg( options.radius.randomise, types.BOOLEAN, false ),
-        velocity: utils.ensureTypedArg( options.velocity.randomise, types.BOOLEAN, false ),
-        acceleration: utils.ensureTypedArg( options.acceleration.randomise, types.BOOLEAN, false ) ||
-            utils.ensureTypedArg( options.drag.randomise, types.BOOLEAN, false ),
-        rotation: utils.ensureTypedArg( options.rotation.randomise, types.BOOLEAN, false ),
-        rotationCenter: utils.ensureTypedArg( options.rotation.randomise, types.BOOLEAN, false ),
-        size: utils.ensureTypedArg( options.size.randomise, types.BOOLEAN, false ),
-        color: utils.ensureTypedArg( options.color.randomise, types.BOOLEAN, false ),
-        opacity: utils.ensureTypedArg( options.opacity.randomise, types.BOOLEAN, false ),
-        angle: utils.ensureTypedArg( options.angle.randomise, types.BOOLEAN, false )
+        position:
+            utils.ensureTypedArg(options.position.randomise, types.BOOLEAN, false) ||
+            utils.ensureTypedArg(options.radius.randomise, types.BOOLEAN, false),
+        velocity: utils.ensureTypedArg(options.velocity.randomise, types.BOOLEAN, false),
+        acceleration:
+            utils.ensureTypedArg(options.acceleration.randomise, types.BOOLEAN, false) ||
+            utils.ensureTypedArg(options.drag.randomise, types.BOOLEAN, false),
+        rotation: utils.ensureTypedArg(options.rotation.randomise, types.BOOLEAN, false),
+        rotationCenter: utils.ensureTypedArg(options.rotation.randomise, types.BOOLEAN, false),
+        size: utils.ensureTypedArg(options.size.randomise, types.BOOLEAN, false),
+        color: utils.ensureTypedArg(options.color.randomise, types.BOOLEAN, false),
+        opacity: utils.ensureTypedArg(options.opacity.randomise, types.BOOLEAN, false),
+        angle: utils.ensureTypedArg(options.angle.randomise, types.BOOLEAN, false),
     };
 
     this.updateFlags = {};
@@ -2936,24 +2882,24 @@ SPE.Emitter = function( options ) {
     // A map to indicate which emitter parameters should update
     // which attribute.
     this.updateMap = {
-        maxAge: 'params',
-        position: 'position',
-        velocity: 'velocity',
-        acceleration: 'acceleration',
-        drag: 'acceleration',
-        wiggle: 'params',
-        rotation: 'rotation',
-        size: 'size',
-        color: 'color',
-        opacity: 'opacity',
-        angle: 'angle'
+        maxAge: "params",
+        position: "position",
+        velocity: "velocity",
+        acceleration: "acceleration",
+        drag: "acceleration",
+        wiggle: "params",
+        rotation: "rotation",
+        size: "size",
+        color: "color",
+        opacity: "opacity",
+        angle: "angle",
     };
 
-    for ( var i in this.updateMap ) {
-        if ( this.updateMap.hasOwnProperty( i ) ) {
-            this.updateCounts[ this.updateMap[ i ] ] = 0.0;
-            this.updateFlags[ this.updateMap[ i ] ] = false;
-            this._createGetterSetters( this[ i ], i );
+    for (let i in this.updateMap) {
+        if (this.updateMap.hasOwnProperty(i)) {
+            this.updateCounts[this.updateMap[i]] = 0.0;
+            this.updateFlags[this.updateMap[i]] = false;
+            this._createGetterSetters(this[i], i);
         }
     }
 
@@ -2961,148 +2907,141 @@ SPE.Emitter = function( options ) {
     this.attributeKeys = null;
     this.attributeCount = 0;
 
-
     // Ensure that the value-over-lifetime property objects above
     // have value and spread properties that are of the same length.
     //
     // Also, for now, make sure they have a length of 3 (min/max arguments here).
-    utils.ensureValueOverLifetimeCompliance( this.color, lifetimeLength, lifetimeLength );
-    utils.ensureValueOverLifetimeCompliance( this.opacity, lifetimeLength, lifetimeLength );
-    utils.ensureValueOverLifetimeCompliance( this.size, lifetimeLength, lifetimeLength );
-    utils.ensureValueOverLifetimeCompliance( this.angle, lifetimeLength, lifetimeLength );
+    utils.ensureValueOverLifetimeCompliance(this.color, lifetimeLength, lifetimeLength);
+    utils.ensureValueOverLifetimeCompliance(this.opacity, lifetimeLength, lifetimeLength);
+    utils.ensureValueOverLifetimeCompliance(this.size, lifetimeLength, lifetimeLength);
+    utils.ensureValueOverLifetimeCompliance(this.angle, lifetimeLength, lifetimeLength);
 };
 
 SPE.Emitter.constructor = SPE.Emitter;
 
-SPE.Emitter.prototype._createGetterSetters = function( propObj, propName ) {
-    'use strict';
+SPE.Emitter.prototype._createGetterSetters = function (propObj, propName) {
+    "use strict";
 
-    var self = this;
+    let self = this;
 
-    for ( var i in propObj ) {
-        if ( propObj.hasOwnProperty( i ) ) {
+    for (let i in propObj) {
+        if (propObj.hasOwnProperty(i)) {
+            let name = i.replace("_", "");
 
-            var name = i.replace( '_', '' );
-
-            Object.defineProperty( propObj, name, {
-                get: ( function( prop ) {
-                    return function() {
-                        return this[ prop ];
+            Object.defineProperty(propObj, name, {
+                get: (function (prop) {
+                    return function () {
+                        return this[prop];
                     };
-                }( i ) ),
+                })(i),
 
-                set: ( function( prop ) {
-                    return function( value ) {
-                        var mapName = self.updateMap[ propName ],
-                            prevValue = this[ prop ],
+                set: (function (prop) {
+                    return function (value) {
+                        let mapName = self.updateMap[propName],
+                            prevValue = this[prop],
                             length = SPE.valueOverLifetimeLength;
 
-                        if ( prop === '_rotationCenter' ) {
+                        if (prop === "_rotationCenter") {
                             self.updateFlags.rotationCenter = true;
                             self.updateCounts.rotationCenter = 0.0;
-                        }
-                        else if ( prop === '_randomise' ) {
-                            self.resetFlags[ mapName ] = value;
-                        }
-                        else {
-                            self.updateFlags[ mapName ] = true;
-                            self.updateCounts[ mapName ] = 0.0;
+                        } else if (prop === "_randomise") {
+                            self.resetFlags[mapName] = value;
+                        } else {
+                            self.updateFlags[mapName] = true;
+                            self.updateCounts[mapName] = 0.0;
                         }
 
                         self.group._updateDefines();
 
-                        this[ prop ] = value;
+                        this[prop] = value;
 
                         // If the previous value was an array, then make
                         // sure the provided value is interpolated correctly.
-                        if ( Array.isArray( prevValue ) ) {
-                            SPE.utils.ensureValueOverLifetimeCompliance( self[ propName ], length, length );
+                        if (Array.isArray(prevValue)) {
+                            SPE.utils.ensureValueOverLifetimeCompliance(self[propName], length, length);
                         }
                     };
-                }( i ) )
-            } );
+                })(i),
+            });
         }
     }
 };
 
-SPE.Emitter.prototype._setBufferUpdateRanges = function( keys ) {
-    'use strict';
+SPE.Emitter.prototype._setBufferUpdateRanges = function (keys) {
+    "use strict";
 
     this.attributeKeys = keys;
     this.attributeCount = keys.length;
 
-    for ( var i = this.attributeCount - 1; i >= 0; --i ) {
-        this.bufferUpdateRanges[ keys[ i ] ] = {
+    for (let i = this.attributeCount - 1; i >= 0; --i) {
+        this.bufferUpdateRanges[keys[i]] = {
             min: Number.POSITIVE_INFINITY,
-            max: Number.NEGATIVE_INFINITY
+            max: Number.NEGATIVE_INFINITY,
         };
     }
 };
 
-SPE.Emitter.prototype._calculatePPSValue = function( groupMaxAge ) {
-    'use strict';
+SPE.Emitter.prototype._calculatePPSValue = function (groupMaxAge) {
+    "use strict";
 
-    var particleCount = this.particleCount;
-
+    let particleCount = this.particleCount;
 
     // Calculate the `particlesPerSecond` value for this emitter. It's used
     // when determining which particles should die and which should live to
     // see another day. Or be born, for that matter. The "God" property.
-    if ( this.duration ) {
-        this.particlesPerSecond = particleCount / ( groupMaxAge < this.duration ? groupMaxAge : this.duration );
-    }
-    else {
+    if (this.duration) {
+        this.particlesPerSecond = particleCount / (groupMaxAge < this.duration ? groupMaxAge : this.duration);
+    } else {
         this.particlesPerSecond = particleCount / groupMaxAge;
     }
 };
 
-SPE.Emitter.prototype._setAttributeOffset = function( startIndex ) {
+SPE.Emitter.prototype._setAttributeOffset = function (startIndex) {
     this.attributeOffset = startIndex;
     this.activationIndex = startIndex;
     this.activationEnd = startIndex + this.particleCount;
 };
 
+SPE.Emitter.prototype._assignValue = function (prop, index) {
+    "use strict";
 
-SPE.Emitter.prototype._assignValue = function( prop, index ) {
-    'use strict';
-
-    switch ( prop ) {
-        case 'position':
-            this._assignPositionValue( index );
+    switch (prop) {
+        case "position":
+            this._assignPositionValue(index);
             break;
 
-        case 'velocity':
-        case 'acceleration':
-            this._assignForceValue( index, prop );
+        case "velocity":
+        case "acceleration":
+            this._assignForceValue(index, prop);
             break;
 
-        case 'size':
-        case 'opacity':
-            this._assignAbsLifetimeValue( index, prop );
+        case "size":
+        case "opacity":
+            this._assignAbsLifetimeValue(index, prop);
             break;
 
-        case 'angle':
-            this._assignAngleValue( index );
+        case "angle":
+            this._assignAngleValue(index);
             break;
 
-        case 'params':
-            this._assignParamsValue( index );
+        case "params":
+            this._assignParamsValue(index);
             break;
 
-        case 'rotation':
-            this._assignRotationValue( index );
+        case "rotation":
+            this._assignRotationValue(index);
             break;
 
-        case 'color':
-            this._assignColorValue( index );
+        case "color":
+            this._assignColorValue(index);
             break;
     }
 };
 
-SPE.Emitter.prototype._assignPositionValue = function( index ) {
-    'use strict';
+SPE.Emitter.prototype._assignPositionValue = function (index) {
+    "use strict";
 
-    var distributions = SPE.distributions,
+    let distributions = SPE.distributions,
         utils = SPE.utils,
         prop = this.position,
         attr = this.attributes.position,
@@ -3110,43 +3049,60 @@ SPE.Emitter.prototype._assignPositionValue = function( index ) {
         spread = prop._spread,
         distribution = prop._distribution;
 
-    switch ( distribution ) {
+    switch (distribution) {
         case distributions.BOX:
-            utils.randomVector3( attr, index, value, spread, prop._spreadClamp );
+            utils.randomVector3(attr, index, value, spread, prop._spreadClamp);
             break;
 
         case distributions.SPHERE:
-            utils.randomVector3OnSphere( attr, index, value, prop._radius, prop._spread.x, prop._radiusScale, prop._spreadClamp.x, prop._distributionClamp || this.particleCount );
+            utils.randomVector3OnSphere(
+                attr,
+                index,
+                value,
+                prop._radius,
+                prop._spread.x,
+                prop._radiusScale,
+                prop._spreadClamp.x,
+                prop._distributionClamp || this.particleCount
+            );
             break;
 
         case distributions.DISC:
-            utils.randomVector3OnDisc( attr, index, value, prop._radius, prop._spread.x, prop._radiusScale, prop._spreadClamp.x );
+            utils.randomVector3OnDisc(
+                attr,
+                index,
+                value,
+                prop._radius,
+                prop._spread.x,
+                prop._radiusScale,
+                prop._spreadClamp.x
+            );
             break;
 
         case distributions.LINE:
-            utils.randomVector3OnLine( attr, index, value, spread );
+            utils.randomVector3OnLine(attr, index, value, spread);
             break;
     }
 };
 
-SPE.Emitter.prototype._assignForceValue = function( index, attrName ) {
-    'use strict';
+SPE.Emitter.prototype._assignForceValue = function (index, attrName) {
+    "use strict";
 
-    var distributions = SPE.distributions,
-        utils = SPE.utils,
-        prop = this[ attrName ],
-        value = prop._value,
-        spread = prop._spread,
-        distribution = prop._distribution,
-        pos,
-        positionX,
-        positionY,
-        positionZ,
-        i;
+    let distributions = SPE.distributions;
+    let utils = SPE.utils;
+    let prop = this[attrName];
+    let value = prop._value;
+    let spread = prop._spread;
+    let distribution = prop._distribution;
+    let pos;
+    let positionX;
+    let positionY;
+    let positionZ;
+    let i;
 
-    switch ( distribution ) {
+    switch (distribution) {
         case distributions.BOX:
-            utils.randomVector3( this.attributes[ attrName ], index, value, spread );
+            utils.randomVector3(this.attributes[attrName], index, value, spread);
             break;
 
         case distributions.SPHERE:
@@ -3158,13 +3114,16 @@ SPE.Emitter.prototype._assignForceValue = function( index, attrName ) {
             // positionX = utils.zeroToEpsilon( pos[ i ], true );
             // positionY = utils.zeroToEpsilon( pos[ i + 1 ], true );
             // positionZ = utils.zeroToEpsilon( pos[ i + 2 ], true );
-            positionX = pos[ i ];
-            positionY = pos[ i + 1 ];
-            positionZ = pos[ i + 2 ];
+            positionX = pos[i];
+            positionY = pos[i + 1];
+            positionZ = pos[i + 2];
 
             utils.randomDirectionVector3OnSphere(
-                this.attributes[ attrName ], index,
-                positionX, positionY, positionZ,
+                this.attributes[attrName],
+                index,
+                positionX,
+                positionY,
+                positionZ,
                 this.position._value,
                 prop._value.x,
                 prop._spread.x
@@ -3180,13 +3139,16 @@ SPE.Emitter.prototype._assignForceValue = function( index, attrName ) {
             // positionX = utils.zeroToEpsilon( pos[ i ], true );
             // positionY = utils.zeroToEpsilon( pos[ i + 1 ], true );
             // positionZ = utils.zeroToEpsilon( pos[ i + 2 ], true );
-            positionX = pos[ i ];
-            positionY = pos[ i + 1 ];
-            positionZ = pos[ i + 2 ];
+            positionX = pos[i];
+            positionY = pos[i + 1];
+            positionZ = pos[i + 2];
 
             utils.randomDirectionVector3OnDisc(
-                this.attributes[ attrName ], index,
-                positionX, positionY, positionZ,
+                this.attributes[attrName],
+                index,
+                positionX,
+                positionY,
+                positionZ,
                 this.position._value,
                 prop._value.x,
                 prop._spread.x
@@ -3194,143 +3156,144 @@ SPE.Emitter.prototype._assignForceValue = function( index, attrName ) {
             break;
 
         case distributions.LINE:
-            utils.randomVector3OnLine( this.attributes[ attrName ], index, value, spread );
+            utils.randomVector3OnLine(this.attributes[attrName], index, value, spread);
             break;
     }
 
-    if ( attrName === 'acceleration' ) {
-        var drag = utils.clamp( utils.randomFloat( this.drag._value, this.drag._spread ), 0, 1 );
-        this.attributes.acceleration.typedArray.array[ index * 4 + 3 ] = drag;
+    if (attrName === "acceleration") {
+        let drag = utils.clamp(utils.randomFloat(this.drag._value, this.drag._spread), 0, 1);
+        this.attributes.acceleration.typedArray.array[index * 4 + 3] = drag;
     }
 };
 
-SPE.Emitter.prototype._assignAbsLifetimeValue = function( index, propName ) {
-    'use strict';
+SPE.Emitter.prototype._assignAbsLifetimeValue = function (index, propName) {
+    "use strict";
 
-    var array = this.attributes[ propName ].typedArray,
-        prop = this[ propName ],
-        utils = SPE.utils,
-        value;
+    let array = this.attributes[propName].typedArray;
+    let prop = this[propName];
+    let utils = SPE.utils;
+    let value;
 
-    if ( utils.arrayValuesAreEqual( prop._value ) && utils.arrayValuesAreEqual( prop._spread ) ) {
-        value = Math.abs( utils.randomFloat( prop._value[ 0 ], prop._spread[ 0 ] ) );
-        array.setVec4Components( index, value, value, value, value );
-    }
-    else {
-        array.setVec4Components( index,
-            Math.abs( utils.randomFloat( prop._value[ 0 ], prop._spread[ 0 ] ) ),
-            Math.abs( utils.randomFloat( prop._value[ 1 ], prop._spread[ 1 ] ) ),
-            Math.abs( utils.randomFloat( prop._value[ 2 ], prop._spread[ 2 ] ) ),
-            Math.abs( utils.randomFloat( prop._value[ 3 ], prop._spread[ 3 ] ) )
+    if (utils.arrayValuesAreEqual(prop._value) && utils.arrayValuesAreEqual(prop._spread)) {
+        value = Math.abs(utils.randomFloat(prop._value[0], prop._spread[0]));
+        array.setVec4Components(index, value, value, value, value);
+    } else {
+        array.setVec4Components(
+            index,
+            Math.abs(utils.randomFloat(prop._value[0], prop._spread[0])),
+            Math.abs(utils.randomFloat(prop._value[1], prop._spread[1])),
+            Math.abs(utils.randomFloat(prop._value[2], prop._spread[2])),
+            Math.abs(utils.randomFloat(prop._value[3], prop._spread[3]))
         );
     }
 };
 
-SPE.Emitter.prototype._assignAngleValue = function( index ) {
-    'use strict';
+SPE.Emitter.prototype._assignAngleValue = function (index) {
+    "use strict";
 
-    var array = this.attributes.angle.typedArray,
-        prop = this.angle,
-        utils = SPE.utils,
-        value;
+    let array = this.attributes.angle.typedArray;
+    let prop = this.angle;
+    let utils = SPE.utils;
+    let value;
 
-    if ( utils.arrayValuesAreEqual( prop._value ) && utils.arrayValuesAreEqual( prop._spread ) ) {
-        value = utils.randomFloat( prop._value[ 0 ], prop._spread[ 0 ] );
-        array.setVec4Components( index, value, value, value, value );
-    }
-    else {
-        array.setVec4Components( index,
-            utils.randomFloat( prop._value[ 0 ], prop._spread[ 0 ] ),
-            utils.randomFloat( prop._value[ 1 ], prop._spread[ 1 ] ),
-            utils.randomFloat( prop._value[ 2 ], prop._spread[ 2 ] ),
-            utils.randomFloat( prop._value[ 3 ], prop._spread[ 3 ] )
+    if (utils.arrayValuesAreEqual(prop._value) && utils.arrayValuesAreEqual(prop._spread)) {
+        value = utils.randomFloat(prop._value[0], prop._spread[0]);
+        array.setVec4Components(index, value, value, value, value);
+    } else {
+        array.setVec4Components(
+            index,
+            utils.randomFloat(prop._value[0], prop._spread[0]),
+            utils.randomFloat(prop._value[1], prop._spread[1]),
+            utils.randomFloat(prop._value[2], prop._spread[2]),
+            utils.randomFloat(prop._value[3], prop._spread[3])
         );
     }
 };
 
-SPE.Emitter.prototype._assignParamsValue = function( index ) {
-    'use strict';
+SPE.Emitter.prototype._assignParamsValue = function (index) {
+    "use strict";
 
-    this.attributes.params.typedArray.setVec4Components( index,
+    this.attributes.params.typedArray.setVec4Components(
+        index,
         this.isStatic ? 1 : 0,
         0.0,
-        Math.abs( SPE.utils.randomFloat( this.maxAge._value, this.maxAge._spread ) ),
-        SPE.utils.randomFloat( this.wiggle._value, this.wiggle._spread )
+        Math.abs(SPE.utils.randomFloat(this.maxAge._value, this.maxAge._spread)),
+        SPE.utils.randomFloat(this.wiggle._value, this.wiggle._spread)
     );
 };
 
-SPE.Emitter.prototype._assignRotationValue = function( index ) {
-    'use strict';
+SPE.Emitter.prototype._assignRotationValue = function (index) {
+    "use strict";
 
-    this.attributes.rotation.typedArray.setVec3Components( index,
-        SPE.utils.getPackedRotationAxis( this.rotation._axis, this.rotation._axisSpread ),
-        SPE.utils.randomFloat( this.rotation._angle, this.rotation._angleSpread ),
+    this.attributes.rotation.typedArray.setVec3Components(
+        index,
+        SPE.utils.getPackedRotationAxis(this.rotation._axis, this.rotation._axisSpread),
+        SPE.utils.randomFloat(this.rotation._angle, this.rotation._angleSpread),
         this.rotation._static ? 0 : 1
     );
 
-    this.attributes.rotationCenter.typedArray.setVec3( index, this.rotation._center );
+    this.attributes.rotationCenter.typedArray.setVec3(index, this.rotation._center);
 };
 
-SPE.Emitter.prototype._assignColorValue = function( index ) {
-    'use strict';
-    SPE.utils.randomColorAsHex( this.attributes.color, index, this.color._value, this.color._spread );
+SPE.Emitter.prototype._assignColorValue = function (index) {
+    "use strict";
+    SPE.utils.randomColorAsHex(this.attributes.color, index, this.color._value, this.color._spread);
 };
 
-SPE.Emitter.prototype._resetParticle = function( index ) {
-    'use strict';
+SPE.Emitter.prototype._resetParticle = function (index) {
+    "use strict";
 
-    var resetFlags = this.resetFlags,
-        updateFlags = this.updateFlags,
-        updateCounts = this.updateCounts,
-        keys = this.attributeKeys,
-        key,
-        updateFlag;
+    let resetFlags = this.resetFlags;
+    let updateFlags = this.updateFlags;
+    let updateCounts = this.updateCounts;
+    let keys = this.attributeKeys;
+    let key;
+    let updateFlag;
 
-    for ( var i = this.attributeCount - 1; i >= 0; --i ) {
-        key = keys[ i ];
-        updateFlag = updateFlags[ key ];
+    for (let i = this.attributeCount - 1; i >= 0; --i) {
+        key = keys[i];
+        updateFlag = updateFlags[key];
 
-        if ( resetFlags[ key ] === true || updateFlag === true ) {
-            this._assignValue( key, index );
-            this._updateAttributeUpdateRange( key, index );
+        if (resetFlags[key] === true || updateFlag === true) {
+            this._assignValue(key, index);
+            this._updateAttributeUpdateRange(key, index);
 
-            if ( updateFlag === true && updateCounts[ key ] === this.particleCount ) {
-                updateFlags[ key ] = false;
-                updateCounts[ key ] = 0.0;
-            }
-            else if ( updateFlag == true ) {
-                ++updateCounts[ key ];
+            if (updateFlag === true && updateCounts[key] === this.particleCount) {
+                updateFlags[key] = false;
+                updateCounts[key] = 0.0;
+            } else if (updateFlag == true) {
+                ++updateCounts[key];
             }
         }
     }
 };
 
-SPE.Emitter.prototype._updateAttributeUpdateRange = function( attr, i ) {
-    'use strict';
+SPE.Emitter.prototype._updateAttributeUpdateRange = function (attr, i) {
+    "use strict";
 
-    var ranges = this.bufferUpdateRanges[ attr ];
+    let ranges = this.bufferUpdateRanges[attr];
 
-    ranges.min = Math.min( i, ranges.min );
-    ranges.max = Math.max( i, ranges.max );
+    ranges.min = Math.min(i, ranges.min);
+    ranges.max = Math.max(i, ranges.max);
 };
 
-SPE.Emitter.prototype._resetBufferRanges = function() {
-    'use strict';
+SPE.Emitter.prototype._resetBufferRanges = function () {
+    "use strict";
 
-    var ranges = this.bufferUpdateRanges,
-        keys = this.bufferUpdateKeys,
-        i = this.bufferUpdateCount - 1,
-        key;
+    let ranges = this.bufferUpdateRanges;
+    let keys = this.bufferUpdateKeys;
+    let i = this.bufferUpdateCount - 1;
+    let key;
 
-    for ( i; i >= 0; --i ) {
-        key = keys[ i ];
-        ranges[ key ].min = Number.POSITIVE_INFINITY;
-        ranges[ key ].max = Number.NEGATIVE_INFINITY;
+    for (let i; i >= 0; --i) {
+        key = keys[i];
+        ranges[key].min = Number.POSITIVE_INFINITY;
+        ranges[key].max = Number.NEGATIVE_INFINITY;
     }
 };
 
-SPE.Emitter.prototype._onRemove = function() {
-    'use strict';
+SPE.Emitter.prototype._onRemove = function () {
+    "use strict";
     // Reset any properties of the emitter that were set by
     // a group when it was added.
     this.particlesPerSecond = 0;
@@ -3343,68 +3306,75 @@ SPE.Emitter.prototype._onRemove = function() {
     this.age = 0.0;
 };
 
-SPE.Emitter.prototype._decrementParticleCount = function() {
-    'use strict';
+SPE.Emitter.prototype._decrementParticleCount = function () {
+    "use strict";
     --this.activeParticleCount;
 
     // TODO:
     //  - Trigger event if count === 0.
 };
 
-SPE.Emitter.prototype._incrementParticleCount = function() {
-    'use strict';
+SPE.Emitter.prototype._incrementParticleCount = function () {
+    "use strict";
     ++this.activeParticleCount;
 
     // TODO:
     //  - Trigger event if count === this.particleCount.
 };
 
-SPE.Emitter.prototype._checkParticleAges = function( start, end, params, dt ) {
-    'use strict';
-    for ( var i = end - 1, index, maxAge, age, alive; i >= start; --i ) {
+SPE.Emitter.prototype._checkParticleAges = function (start, end, params, dt) {
+    "use strict";
+
+    let index;
+    let maxAge;
+    let age;
+    let alive;
+
+    for (let i = end - 1; i >= start; --i) {
         index = i * 4;
 
-        alive = params[ index ];
+        alive = params[index];
 
-        if ( alive === 0.0 ) {
+        if (alive === 0.0) {
             continue;
         }
 
         // Increment age
-        age = params[ index + 1 ];
-        maxAge = params[ index + 2 ];
+        age = params[index + 1];
+        maxAge = params[index + 2];
 
-        if ( this.direction === 1 ) {
+        if (this.direction === 1) {
             age += dt;
 
-            if ( age >= maxAge ) {
+            if (age >= maxAge) {
                 age = 0.0;
                 alive = 0.0;
                 this._decrementParticleCount();
             }
-        }
-        else {
+        } else {
             age -= dt;
 
-            if ( age <= 0.0 ) {
+            if (age <= 0.0) {
                 age = maxAge;
                 alive = 0.0;
                 this._decrementParticleCount();
             }
         }
 
-        params[ index ] = alive;
-        params[ index + 1 ] = age;
+        params[index] = alive;
+        params[index + 1] = age;
 
-        this._updateAttributeUpdateRange( 'params', i );
+        this._updateAttributeUpdateRange("params", i);
     }
 };
 
-SPE.Emitter.prototype._activateParticles = function( activationStart, activationEnd, params, dtPerParticle ) {
-    'use strict';
-    var direction = this.direction;
+SPE.Emitter.prototype._activateParticles = function (activationStart, activationEnd, params, dtPerParticle) {
+    "use strict";
+    let direction = this.direction;
+    let index;
+    let dtValue;
 
-    for ( var i = activationStart, index, dtValue; i < activationEnd; ++i ) {
+    for (let i = activationStart; i < activationEnd; ++i) {
         index = i * 4;
 
         // Don't re-activate particles that aren't dead yet.
@@ -3412,7 +3382,7 @@ SPE.Emitter.prototype._activateParticles = function( activationStart, activation
         //     continue;
         // }
 
-        if ( params[ index ] != 0.0 && this.particleCount !== 1 ) {
+        if (params[index] != 0.0 && this.particleCount !== 1) {
             continue;
         }
 
@@ -3420,10 +3390,10 @@ SPE.Emitter.prototype._activateParticles = function( activationStart, activation
         this._incrementParticleCount();
 
         // Mark the particle as alive.
-        params[ index ] = 1.0;
+        params[index] = 1.0;
 
         // Reset the particle
-        this._resetParticle( i );
+        this._resetParticle(i);
 
         // Move each particle being activated to
         // it's actual position in time.
@@ -3431,10 +3401,10 @@ SPE.Emitter.prototype._activateParticles = function( activationStart, activation
         // This stops particles being 'clumped' together
         // when frame rates are on the lower side of 60fps
         // or not constant (a very real possibility!)
-        dtValue = dtPerParticle * ( i - activationStart )
-        params[ index + 1 ] = direction === -1 ? params[ index + 2 ] - dtValue : dtValue;
+        dtValue = dtPerParticle * (i - activationStart);
+        params[index + 1] = direction === -1 ? params[index + 2] - dtValue : dtValue;
 
-        this._updateAttributeUpdateRange( 'params', i );
+        this._updateAttributeUpdateRange("params", i);
     }
 };
 
@@ -3447,60 +3417,58 @@ SPE.Emitter.prototype._activateParticles = function( activationStart, activation
  *
  * @param  {Number} dt The number of seconds to simulate (deltaTime)
  */
-SPE.Emitter.prototype.tick = function( dt ) {
-    'use strict';
+SPE.Emitter.prototype.tick = function (dt) {
+    "use strict";
 
-    if ( this.isStatic ) {
+    if (this.isStatic) {
         return;
     }
 
-    if ( this.paramsArray === null ) {
+    if (this.paramsArray === null) {
         this.paramsArray = this.attributes.params.typedArray.array;
     }
 
-    var start = this.attributeOffset,
-        end = start + this.particleCount,
-        params = this.paramsArray, // vec3( alive, age, maxAge, wiggle )
-        ppsDt = this.particlesPerSecond * this.activeMultiplier * dt,
-        activationIndex = this.activationIndex;
+    let start = this.attributeOffset;
+    let end = start + this.particleCount;
+    let params = this.paramsArray;
+    let ppsDt = this.particlesPerSecond * this.activeMultiplier * dt;
+    let activationIndex = this.activationIndex;
 
     // Reset the buffer update indices.
     this._resetBufferRanges();
 
     // Increment age for those particles that are alive,
     // and kill off any particles whose age is over the limit.
-    this._checkParticleAges( start, end, params, dt );
+    this._checkParticleAges(start, end, params, dt);
 
     // If the emitter is dead, reset the age of the emitter to zero,
     // ready to go again if required
-    if ( this.alive === false ) {
+    if (this.alive === false) {
         this.age = 0.0;
         return;
     }
 
     // If the emitter has a specified lifetime and we've exceeded it,
     // mark the emitter as dead.
-    if ( this.duration !== null && this.age > this.duration ) {
+    if (this.duration !== null && this.age > this.duration) {
         this.alive = false;
         this.age = 0.0;
         return;
     }
 
+    let activationStart = this.particleCount === 1 ? activationIndex : activationIndex | 0;
+    let activationEnd = Math.min(activationStart + ppsDt, this.activationEnd);
+    let activationCount = (activationEnd - this.activationIndex) | 0;
+    let dtPerParticle = activationCount > 0 ? dt / activationCount : 0;
 
-    var activationStart = this.particleCount === 1 ? activationIndex : ( activationIndex | 0 ),
-        activationEnd = Math.min( activationStart + ppsDt, this.activationEnd ),
-        activationCount = activationEnd - this.activationIndex | 0,
-        dtPerParticle = activationCount > 0 ? dt / activationCount : 0;
-
-    this._activateParticles( activationStart, activationEnd, params, dtPerParticle );
+    this._activateParticles(activationStart, activationEnd, params, dtPerParticle);
 
     // Move the activation window forward, soldier.
     this.activationIndex += ppsDt;
 
-    if ( this.activationIndex > end ) {
+    if (this.activationIndex > end) {
         this.activationIndex = start;
     }
-
 
     // Increment the age of the emitter.
     this.age += dt;
@@ -3514,23 +3482,24 @@ SPE.Emitter.prototype.tick = function( dt ) {
  * @param  {Boolean} [force=undefined] If true, all particles will be marked as dead instantly.
  * @return {Emitter}       This emitter instance.
  */
-SPE.Emitter.prototype.reset = function( force ) {
-    'use strict';
+SPE.Emitter.prototype.reset = function (force) {
+    "use strict";
 
     this.age = 0.0;
     this.alive = false;
 
-    if ( force === true ) {
-        var start = this.attributeOffset,
-            end = start + this.particleCount,
-            array = this.paramsArray,
-            attr = this.attributes.params.bufferAttribute;
+    if (force === true) {
+        let start = this.attributeOffset;
+        let end = start + this.particleCount;
+        let array = this.paramsArray;
+        let attr = this.attributes.params.bufferAttribute;
+        let index;
 
-        for ( var i = end - 1, index; i >= start; --i ) {
+        for (let i = end - 1; i >= start; --i) {
             index = i * 4;
 
-            array[ index ] = 0.0;
-            array[ index + 1 ] = 0.0;
+            array[index] = 0.0;
+            array[index + 1] = 0.0;
         }
 
         attr.updateRange.offset = 0;
@@ -3547,8 +3516,8 @@ SPE.Emitter.prototype.reset = function( force ) {
  *
  * @return {Emitter} This emitter instance.
  */
-SPE.Emitter.prototype.enable = function() {
-    'use strict';
+SPE.Emitter.prototype.enable = function () {
+    "use strict";
     this.alive = true;
     return this;
 };
@@ -3561,8 +3530,8 @@ SPE.Emitter.prototype.enable = function() {
  *
  * @return {Emitter} This emitter instance.
  */
-SPE.Emitter.prototype.disable = function() {
-    'use strict';
+SPE.Emitter.prototype.disable = function () {
+    "use strict";
 
     this.alive = false;
     return this;
@@ -3579,13 +3548,12 @@ SPE.Emitter.prototype.disable = function() {
  *
  * @see SPE.Group.prototype.removeEmitter
  */
-SPE.Emitter.prototype.remove = function() {
-    'use strict';
-    if ( this.group !== null ) {
-        this.group.removeEmitter( this );
-    }
-    else {
-        console.error( 'Emitter does not belong to a group, cannot remove.' );
+SPE.Emitter.prototype.remove = function () {
+    "use strict";
+    if (this.group !== null) {
+        this.group.removeEmitter(this);
+    } else {
+        console.error("Emitter does not belong to a group, cannot remove.");
     }
 
     return this;
