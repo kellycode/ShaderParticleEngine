@@ -1,3 +1,5 @@
+//import * as THREE from "three";
+
 /* shader-particle-engine 1.1.0
  * 
  * (c) 2015 Luke Moody (http://www.github.com/squarefeet)
@@ -770,6 +772,7 @@ SPE.shaderChunks = {
         '}',
     ].join( '\n' ),
 
+    /*
     floatOverLifetime: [
         'float getFloatOverLifetime( in float positionInTime, in vec4 attr ) {',
         '    highp float value = 0.0;',
@@ -791,6 +794,28 @@ SPE.shaderChunks = {
         '       fIndex = float( i );',
         '       shouldApplyValue = and( when_gt( deltaAge, fIndex ), when_le( deltaAge, fIndex + 1.0 ) );',
         '       value += shouldApplyValue * mix( attr[ i ], attr[ i + 1 ], deltaAge - fIndex );',
+        '    }',
+        '',
+        '    return value;',
+        '}',
+    ].join( '\n' ),
+*/
+    // MODIFIED floatOverLifetime
+    floatOverLifetime: [
+        'float getFloatOverLifetime( in float positionInTime, in vec4 attr ) {',
+        '    const int VEC4_SIZE = 4;',
+        '    float value = 0.0;',
+        '    float deltaAge = clamp(positionInTime * float(VEC4_SIZE - 2), 0.0, float(VEC4_SIZE - 2));',
+        '',
+        '    if (deltaAge == 0.0) return attr[0];',
+        '    if (deltaAge >= float(VEC4_SIZE - 1)) return attr[VEC4_SIZE - 1];',
+        '',
+        '    for( int i = 0; i < VEC4_SIZE - 1; ++i ) {',
+        '       float fIndex = float( i );',
+        '       float shouldApplyValue = and( when_gt( deltaAge, fIndex ), when_le( deltaAge, fIndex + 1.0 ) );',
+        '       if(i <= 3) {',
+        '           value += shouldApplyValue * mix( attr[ i ], attr[ i + 1 ], deltaAge - fIndex );',
+        '       }',
         '    }',
         '',
         '    return value;',

@@ -2,9 +2,10 @@ module.exports = function( grunt ) {
     'use strict';
 
     var packageJSON = grunt.file.readJSON( 'package.json' );
-    var addHeader = 'import * as THREE from "three";';
+    var addHeader = '//import * as THREE from "three";';
 
     var licenseBanner =
+        addHeader + '\n' + '\n' +
         '/* ' + packageJSON.name + ' ' + packageJSON.version + '\n' +
         ' * ' + '\n' +
         ' * (c) 2015 Luke Moody (http://www.github.com/squarefeet)' + '\n' +
