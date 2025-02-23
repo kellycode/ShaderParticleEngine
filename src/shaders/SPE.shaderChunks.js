@@ -117,6 +117,8 @@ SPE.shaderChunks = {
         '}',
     ].join( '\n' ),
 
+    
+    // ORIGINAL floatOverLifetime
     /*
     floatOverLifetime: [
         'float getFloatOverLifetime( in float positionInTime, in vec4 attr ) {',
@@ -144,7 +146,9 @@ SPE.shaderChunks = {
         '    return value;',
         '}',
     ].join( '\n' ),
-*/
+    */
+
+
     // MODIFIED floatOverLifetime
     floatOverLifetime: [
         'float getFloatOverLifetime( in float positionInTime, in vec4 attr ) {',
