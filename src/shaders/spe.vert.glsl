@@ -52,136 +52,150 @@ in vec4 vSpriteSheet;
 #endif
 #define whiteComplement( a ) ( 1.0 - saturate( a ) )
 
-float pow2( const in float x ) { return x*x; }
-vec3 pow2( const in vec3 x ) { return x*x; }
-float pow3( const in float x ) { return x*x*x; }
-float pow4( const in float x ) { float x2 = x*x; return x2*x2; }
-float max3( const in vec3 v ) { return max( max( v.x, v.y ), v.z ); }
-float average( const in vec3 v ) { return dot( v, vec3( 0.3333333 ) ); }
+float pow2(const in float x) {
+    return x*x;
+}
+vec3 pow2(const in vec3 x) {
+    return x*x;
+}
+float pow3(const in float x) {
+    return x*x*x;
+}
+float pow4(const in float x) {
+    float x2=x*x;
+    return x2*x2;
+}
+float max3(const in vec3 v) {
+    return max(max(v.x, v.y), v.z);
+}
+float average(const in vec3 v) {
+    return dot(v, vec3(0.3333333f));
+}
 
 // expects values in the range of [0,1]x[0,1], returns values in the [0,1] range.
 // do not collapse into a single function per: http://byteblacksmith.com/improvements-to-the-canonical-one-liner-glsl-rand-for-opengl-es-2-0/
-highp float rand( const in vec2 uv ) {
+highp float rand(const in vec2 uv) {
 
-	const highp float a = 12.9898, b = 78.233, c = 43758.5453;
-	highp float dt = dot( uv.xy, vec2( a,b ) ), sn = mod( dt, PI );
+    const highp float a=12.9898f, b=78.233f, c=43758.5453f;
+    highp float dt=dot(uv.xy, vec2(a, b)), sn=mod(dt, PI);
 
-	return fract( sin( sn ) * c );
+    return fract(sin(sn)*c);
 
 }
 
 #ifdef HIGH_PRECISION
-	float precisionSafeLength( vec3 v ) { return length( v ); }
+float precisionSafeLength(vec3 v) {
+    return length(v);
+}
 #else
-	float precisionSafeLength( vec3 v ) {
-		float maxComponent = max3( abs( v ) );
-		return length( v / maxComponent ) * maxComponent;
-	}
+float precisionSafeLength(vec3 v) {
+    float maxComponent=max3(abs(v));
+    return length(v/maxComponent)*maxComponent;
+}
 #endif
 
 struct IncidentLight {
-	vec3 color;
-	vec3 direction;
-	bool visible;
+    vec3 color;
+    vec3 direction;
+    bool visible;
 };
 
 struct ReflectedLight {
-	vec3 directDiffuse;
-	vec3 directSpecular;
-	vec3 indirectDiffuse;
-	vec3 indirectSpecular;
+    vec3 directDiffuse;
+    vec3 directSpecular;
+    vec3 indirectDiffuse;
+    vec3 indirectSpecular;
 };
 
 #ifdef USE_ALPHAHASH
 
-	varying vec3 vPosition;
+varying vec3 vPosition;
 
 #endif
 
-vec3 transformDirection( in vec3 dir, in mat4 matrix ) {
+vec3 transformDirection(in vec3 dir, in mat4 matrix) {
 
-	return normalize( ( matrix * vec4( dir, 0.0 ) ).xyz );
+    return normalize((matrix*vec4(dir, 0.0f)).xyz);
 
 }
 
-vec3 inverseTransformDirection( in vec3 dir, in mat4 matrix ) {
+vec3 inverseTransformDirection(in vec3 dir, in mat4 matrix) {
 
 	// dir can be either a direction vector or a normal vector
 	// upper-left 3x3 of matrix is assumed to be orthogonal
 
-	return normalize( ( vec4( dir, 0.0 ) * matrix ).xyz );
+    return normalize((vec4(dir, 0.0f)*matrix).xyz);
 
 }
 
-mat3 transposeMat3( const in mat3 m ) {
+mat3 transposeMat3(const in mat3 m) {
 
-	mat3 tmp;
+    mat3 tmp;
 
-	tmp[ 0 ] = vec3( m[ 0 ].x, m[ 1 ].x, m[ 2 ].x );
-	tmp[ 1 ] = vec3( m[ 0 ].y, m[ 1 ].y, m[ 2 ].y );
-	tmp[ 2 ] = vec3( m[ 0 ].z, m[ 1 ].z, m[ 2 ].z );
+    tmp[0]=vec3(m[0].x, m[1].x, m[2].x);
+    tmp[1]=vec3(m[0].y, m[1].y, m[2].y);
+    tmp[2]=vec3(m[0].z, m[1].z, m[2].z);
 
-	return tmp;
-
-}
-
-bool isPerspectiveMatrix( mat4 m ) {
-
-	return m[ 2 ][ 3 ] == - 1.0;
+    return tmp;
 
 }
 
-vec2 equirectUv( in vec3 dir ) {
+bool isPerspectiveMatrix(mat4 m) {
+
+    return m[2][3]==-1.0f;
+
+}
+
+vec2 equirectUv(in vec3 dir) {
 
 	// dir is assumed to be unit length
 
-	float u = atan( dir.z, dir.x ) * RECIPROCAL_PI2 + 0.5;
+    float u=atan(dir.z, dir.x)*RECIPROCAL_PI2+0.5f;
 
-	float v = asin( clamp( dir.y, - 1.0, 1.0 ) ) * RECIPROCAL_PI + 0.5;
+    float v=asin(clamp(dir.y,-1.0f, 1.0f))*RECIPROCAL_PI+0.5f;
 
-	return vec2( u, v );
+    return vec2(u, v);
 
 }
 
-vec3 BRDF_Lambert( const in vec3 diffuseColor ) {
+vec3 BRDF_Lambert(const in vec3 diffuseColor) {
 
-	return RECIPROCAL_PI * diffuseColor;
+    return RECIPROCAL_PI*diffuseColor;
 
 } // validated
 
-vec3 F_Schlick( const in vec3 f0, const in float f90, const in float dotVH ) {
+vec3 F_Schlick(const in vec3 f0, const in float f90, const in float dotVH) {
 
-	// Original approximation by Christophe Schlick '94
+	// Original approximation by Christophe Schlick 94
 	// float fresnel = pow( 1.0 - dotVH, 5.0 );
 
-	// Optimized variant (presented by Epic at SIGGRAPH '13)
+	// Optimized variant (presented by Epic at SIGGRAPH 13)
 	// https://cdn2.unrealengine.com/Resources/files/2013SiggraphPresentationsNotes-26915738.pdf
-	float fresnel = exp2( ( - 5.55473 * dotVH - 6.98316 ) * dotVH );
+    float fresnel=exp2((-5.55473f*dotVH-6.98316f)*dotVH);
 
-	return f0 * ( 1.0 - fresnel ) + ( f90 * fresnel );
+    return f0*(1.0f-fresnel)+(f90*fresnel);
 
 } // validated
 
-float F_Schlick( const in float f0, const in float f90, const in float dotVH ) {
+float F_Schlick(const in float f0, const in float f90, const in float dotVH) {
 
-	// Original approximation by Christophe Schlick '94
+	// Original approximation by Christophe Schlick 94
 	// float fresnel = pow( 1.0 - dotVH, 5.0 );
 
-	// Optimized variant (presented by Epic at SIGGRAPH '13)
+	// Optimized variant (presented by Epic at SIGGRAPH 13)
 	// https://cdn2.unrealengine.com/Resources/files/2013SiggraphPresentationsNotes-26915738.pdf
-	float fresnel = exp2( ( - 5.55473 * dotVH - 6.98316 ) * dotVH );
+    float fresnel=exp2((-5.55473f*dotVH-6.98316f)*dotVH);
 
-	return f0 * ( 1.0 - fresnel ) + ( f90 * fresnel );
+    return f0*(1.0f-fresnel)+(f90*fresnel);
 
 } // validated
-
 
 // THREE.ShaderChunk.logdepthbuf_pars_vertex
 
 #ifdef USE_LOGDEPTHBUF
 
-	varying float vFragDepth;
-	varying float vIsPerspective;
+varying float vFragDepth;
+varying float vIsPerspective;
 
 #endif
 
@@ -189,10 +203,9 @@ float F_Schlick( const in float f0, const in float f90, const in float dotVH ) {
 
 #ifdef USE_FOG
 
-	varying float vFogDepth;
+varying float vFogDepth;
 
 #endif
-
 
 /*****************************************************************************************************************************/
 
@@ -271,7 +284,7 @@ float getFloatOverLifetime(in float positionInTime, in vec4 attr) {
     if(deltaAge>=float(VEC4_SIZE-1))
         return attr[VEC4_SIZE-1];
 
-    for(int i=0; i<VEC4_SIZE-1; ++i) {
+    for(int i=0 ; i<VEC4_SIZE-1 ; ++i) {
         float fIndex=float(i);
         float shouldApplyValue=and(when_gt(deltaAge, fIndex), when_le(deltaAge, fIndex+1.0f));
         if(i<=3) {
@@ -381,3 +394,135 @@ vUv.y=1.0f-(gl_PointCoord.y*framesY+rowNorm);
 #endif,
 
 vec4 rotatedTexture=texture2D(tex, vUv);
+
+void main() {
+
+//
+// Setup...
+//
+highp float age=getAge();
+highp float alive=getAlive();
+highp float maxAge=getMaxAge();
+highp float positionInTime=(age/maxAge);
+highp float isAlive=when_gt(alive, 0.0f);
+
+#ifdef SHOULD_WIGGLE_PARTICLES
+float wiggleAmount=positionInTime*getWiggle();
+float wiggleSin=isAlive*sin(wiggleAmount);
+float wiggleCos=isAlive*cos(wiggleAmount);
+#endif,
+
+//
+// Forces
+//
+
+// Get forces & position
+vec3 vel=getVelocity(age);
+vec3 accel=getAcceleration(age);
+vec3 force=vec3(0.0f);
+vec3 pos=vec3(position);
+
+// Calculate the required drag to apply to the forces.
+float drag=1.0f-(positionInTime*0.5f)*acceleration.w;
+
+// Integrate forces...
+force+=vel;
+force*=drag;
+force+=accel*age;
+pos+=force;
+
+// Wiggly wiggly wiggle!
+#ifdef SHOULD_WIGGLE_PARTICLES
+pos.x+=wiggleSin;
+pos.y+=wiggleCos;
+pos.z+=wiggleSin;
+#endif
+
+// Rotate the emitter around its central point
+#ifdef SHOULD_ROTATE_PARTICLES
+pos=getRotation(pos, positionInTime);
+#endif
+
+// Convert pos to a world-space value
+vec4 mvPosition=modelViewMatrix*vec4(pos, 1.0f);
+
+// Determine point size.
+highp float pointSize=getFloatOverLifetime(positionInTime, size)*isAlive;
+
+// Determine perspective
+#ifdef HAS_PERSPECTIVE
+float perspective=scale/length(mvPosition.xyz);
+#else
+float perspective=1.0f;
+#endif
+
+// Apply perpective to pointSize value
+float pointSizePerspective=pointSize*perspective;
+
+//
+// Appearance
+//
+
+// Determine color and opacity for this particle
+#ifdef COLORIZE
+vec3 c=isAlive*getColorOverLifetime(positionInTime,, unpackColor(color.x), unpackColor(color.y), unpackColor(color.z), unpackColor(color.w));
+#else
+vec3 c=vec3(1.0f);
+#endif
+
+float o=isAlive*getFloatOverLifetime(positionInTime, opacity);
+
+// Assign color to vColor varying.
+vColor=vec4(c, o);
+
+// Determine angle
+#ifdef SHOULD_ROTATE_TEXTURE
+vAngle=isAlive*getFloatOverLifetime(positionInTime, angle);
+#endif
+
+// If this particle is using a sprite-sheet as a texture, well have to figure out
+// what frame of the texture the particle is using at its current position in time.
+#ifdef SHOULD_CALCULATE_SPRITE
+float framesX=textureAnimation.x;
+float framesY=textureAnimation.y;
+float loopCount=textureAnimation.w;
+float totalFrames=textureAnimation.z;
+float frameNumber=mod((positionInTime*loopCount)*totalFrames, totalFrames);
+
+float column=floor(mod(frameNumber, framesX));
+float row=floor((frameNumber-column)/framesX);
+
+float columnNorm=column/framesX;
+float rowNorm=row/framesY;
+
+vSpriteSheet.x=1.0f/framesX;
+vSpriteSheet.y=1.0f/framesY;
+vSpriteSheet.z=columnNorm;
+vSpriteSheet.w=rowNorm;
+#endif
+
+//
+// Write values
+//
+
+// Set PointSize according to size at current point in time.
+gl_PointSize=pointSizePerspective;
+gl_Position=projectionMatrix*mvPosition;
+
+//THREE.ShaderChunk.logdepthbuf_vertex
+#ifdef USE_LOGDEPTHBUF
+
+	vFragDepth = 1.0 + gl_Position.w;
+	vIsPerspective = float( isPerspectiveMatrix( projectionMatrix ) );
+
+#endif
+
+
+//THREE.ShaderChunk.fog_vertex,
+#ifdef USE_FOG
+
+	vFogDepth = - mvPosition.z;
+
+#endif
+
+}
