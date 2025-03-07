@@ -176,7 +176,7 @@ SPE.Emitter = function (options) {
         console.warn("onParticleSpawn has been removed. Please set properties directly to alter values at runtime.");
     }
 
-    this.uuid = THREE.Math.generateUUID();
+    this.uuid = SPE.utils.generateUUID();
 
     this.type = utils.ensureTypedArg(options.type, types.NUMBER, SPE.distributions.BOX);
 
@@ -960,8 +960,8 @@ SPE.Emitter.prototype.reset = function (force) {
             array[index + 1] = 0.0;
         }
 
-        attr.updateRange.offset = 0;
-        attr.updateRange.count = -1;
+        attr.addUpdateRange.offset = 0;
+        attr.addUpdateRange.count = -1;
         attr.needsUpdate = true;
     }
 

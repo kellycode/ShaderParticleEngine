@@ -522,7 +522,7 @@ SPE.ShaderAttribute.prototype.flagUpdate = function () {
     "use strict";
 
     let attr = this.bufferAttribute;
-    let range = attr.updateRange;
+    let range = attr.addUpdateRange;
 
     range.offset = this.updateMin;
     range.count = Math.min(this.updateMax - this.updateMin + this.componentSize, this.typedArray.array.length);
@@ -563,8 +563,8 @@ SPE.ShaderAttribute.prototype.forceUpdateAll = function () {
     "use strict";
 
     this.bufferAttribute.array = this.typedArray.array;
-    this.bufferAttribute.updateRange.offset = 0;
-    this.bufferAttribute.updateRange.count = -1;
+    this.bufferAttribute.addUpdateRange.offset = 0;
+    this.bufferAttribute.addUpdateRange.count = -1;
 
     this.bufferAttribute.usage = THREE.StaticDrawUsage;
     this.bufferAttribute.needsUpdate = true;
@@ -772,6 +772,8 @@ SPE.shaderChunks = {
         '}',
     ].join( '\n' ),
 
+    
+    // ORIGINAL floatOverLifetime
     /*
     floatOverLifetime: [
         'float getFloatOverLifetime( in float positionInTime, in vec4 attr ) {',
@@ -799,7 +801,9 @@ SPE.shaderChunks = {
         '    return value;',
         '}',
     ].join( '\n' ),
-*/
+    */
+
+
     // MODIFIED floatOverLifetime
     floatOverLifetime: [
         'float getFloatOverLifetime( in float positionInTime, in vec4 attr ) {',
@@ -1152,6 +1156,16 @@ SPE.utils = {
          */
         OBJECT: "object",
     },
+
+    /** random 128-bit number in canonical uuid format. all bits are random. */
+    generateUUID: function() {
+        function random16Hex() { return (0x10000 | Math.random() * 0x10000).toString(16).substr(1); }
+        return random16Hex() + random16Hex() +
+         "-" + random16Hex() +
+         "-" + random16Hex() +
+         "-" + random16Hex() +
+         "-" + random16Hex() + random16Hex() + random16Hex();
+      },
 
     /**
      * Given a value, a type, and a default value to fallback to,
@@ -1906,7 +1920,7 @@ SPE.Group = function (options) {
     options.texture = utils.ensureTypedArg(options.texture, types.OBJECT, {});
 
     // Assign a UUID to this instance
-    this.uuid = THREE.Math.generateUUID();
+    this.uuid = SPE.utils.generateUUID();
 
     // If no `deltaTime` value is passed to the `SPE.Group.tick` function,
     // the value of this property will be used to advance the simulation.
@@ -2743,7 +2757,7 @@ SPE.Emitter = function (options) {
         console.warn("onParticleSpawn has been removed. Please set properties directly to alter values at runtime.");
     }
 
-    this.uuid = THREE.Math.generateUUID();
+    this.uuid = SPE.utils.generateUUID();
 
     this.type = utils.ensureTypedArg(options.type, types.NUMBER, SPE.distributions.BOX);
 
@@ -3527,8 +3541,8 @@ SPE.Emitter.prototype.reset = function (force) {
             array[index + 1] = 0.0;
         }
 
-        attr.updateRange.offset = 0;
-        attr.updateRange.count = -1;
+        attr.addUpdateRange.offset = 0;
+        attr.addUpdateRange.count = -1;
         attr.needsUpdate = true;
     }
 

@@ -95,7 +95,7 @@ SPE.ShaderAttribute.prototype.flagUpdate = function () {
     "use strict";
 
     let attr = this.bufferAttribute;
-    let range = attr.updateRange;
+    let range = attr.addUpdateRange;
 
     range.offset = this.updateMin;
     range.count = Math.min(this.updateMax - this.updateMin + this.componentSize, this.typedArray.array.length);
@@ -136,8 +136,8 @@ SPE.ShaderAttribute.prototype.forceUpdateAll = function () {
     "use strict";
 
     this.bufferAttribute.array = this.typedArray.array;
-    this.bufferAttribute.updateRange.offset = 0;
-    this.bufferAttribute.updateRange.count = -1;
+    this.bufferAttribute.addUpdateRange.offset = 0;
+    this.bufferAttribute.addUpdateRange.count = -1;
 
     this.bufferAttribute.usage = THREE.StaticDrawUsage;
     this.bufferAttribute.needsUpdate = true;

@@ -36,6 +36,16 @@ SPE.utils = {
         OBJECT: "object",
     },
 
+    /** random 128-bit number in canonical uuid format. all bits are random. */
+    generateUUID: function() {
+        function random16Hex() { return (0x10000 | Math.random() * 0x10000).toString(16).substr(1); }
+        return random16Hex() + random16Hex() +
+         "-" + random16Hex() +
+         "-" + random16Hex() +
+         "-" + random16Hex() +
+         "-" + random16Hex() + random16Hex() + random16Hex();
+      },
+
     /**
      * Given a value, a type, and a default value to fallback to,
      * ensure the given argument adheres to the type requesting,
