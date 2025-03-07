@@ -16,6 +16,14 @@
             }
         </style>
         <link rel="stylesheet" type="text/css" href="./css/style.css" />
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+                }
+            }
+        </script>
     </head>
     <body>
         <div class="link_man">
@@ -35,22 +43,36 @@
             <a href="./runtimeChanging.html" style="color: lightgreen">runtimeChanging</a>
         </div>
 
-        <script src="//cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.js"></script>
-        <script src="./js/three_r160/three.js"></script>
-        <script src="./js/Stats.min.js"></script>
-        <script src="../build/SPE.js"></script>
-        <script src="./js/basicScene.js"></script>
+        <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.js"></script> -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js
+
+
+
+        "></script>
+
+        <script type="module">
+            import * as THREE from "three";
+            import SPE from "../build/SPE.js";
+            import { BasicScene } from "./js/BasicScene.js";
+
+            window.THREE = THREE;
+            window.SPE = SPE;
+            window.BasicScene = BasicScene;
+
+            startExample();
+        </script>
 
         <script type="text/javascript">
-            let speScene = new BasicScene(64);
-
-            let allIn = function (loaded) {
-                initExample(loaded);
+            let speScene;
+            let startExample = function () {
+                speScene = new BasicScene(64);
+                let allIn = function (loaded) {
+                    initExample(loaded);
+                };
+                speScene.safeLoad(["./img/sprite-flame2.jpg"], allIn);
             };
-            speScene.safeLoad(["./img/sprite-flame2.jpg"], allIn);
 
             function initExample(textures) {
-
                 let group = new SPE.Group({
                     // Possible API for animated textures...
                     texture: {

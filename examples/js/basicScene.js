@@ -1,4 +1,7 @@
-class BasicScene {
+import * as THREE from "three";
+import Stats from "three/addons/libs/stats.module.js";
+
+export class BasicScene {
     constructor(fov) {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 0.1, 10000);

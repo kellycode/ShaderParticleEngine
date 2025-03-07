@@ -1,4 +1,4 @@
-//import * as THREE from "three";
+import * as THREE from "three";
 
 /* shader-particle-engine 1.1.0
  * 
@@ -3597,5 +3597,4 @@ SPE.Emitter.prototype.remove = function () {
 
     return this;
 };
-
-// export default SPE;
+export default SPE;

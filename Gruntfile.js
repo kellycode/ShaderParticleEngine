@@ -2,7 +2,7 @@ module.exports = function( grunt ) {
     'use strict';
 
     var packageJSON = grunt.file.readJSON( 'package.json' );
-    var addHeader = '//import * as THREE from "three";';
+    var addHeader = 'import * as THREE from "three";';
 
     var licenseBanner =
         addHeader + '\n' + '\n' +
@@ -56,7 +56,7 @@ module.exports = function( grunt ) {
             options: {
                 separator: '\n\n',
                 banner: licenseBanner,
-                footer: '\n// export default SPE;'
+                footer: 'export default SPE;'
             },
             dist: {
                 src: files,

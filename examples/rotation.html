@@ -2,6 +2,14 @@
     <head>
         <title>SPE: Distribution types</title>
         <link rel="stylesheet" type="text/css" href="./css/style.css" />
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+                }
+            }
+        </script>
     </head>
     <body>
         <div class="link_man">
@@ -21,22 +29,29 @@
             <a href="./runtimeChanging.html">runtimeChanging</a>
         </div>
 
-        <script src="./js/three_r160/three.js"></script>
-        <script src="./js/Stats.min.js"></script>
-        <script src="../build/SPE.js"></script>
-        <script src="./js/basicScene.js"></script>
+        <script type="module">
+            import * as THREE from "three";
+            import SPE from "../build/SPE.js";
+            import { BasicScene } from "./js/BasicScene.js";
+
+            window.THREE = THREE;
+            window.SPE = SPE;
+            window.BasicScene = BasicScene;
+
+            startExample();
+        </script>
 
         <script type="text/javascript">
-            // variables used in init()
-            let speScene = new BasicScene(75);
-
-            // Used in initParticles()
+            let speScene;
             let particleGroup;
 
-            let allIn = function (loaded) {
-                initExample(loaded);
+            let startExample = function () {
+                speScene = new BasicScene(75);
+                let allIn = function (loaded) {
+                    initExample(loaded);
+                };
+                speScene.safeLoad(["./img/smokeparticle.png"], allIn);
             };
-            speScene.safeLoad(["./img/smokeparticle.png"], allIn);
 
             function initExample(textures) {
                 // Setup the scene

@@ -3,6 +3,14 @@
         <title>SPE: Clouds</title>
         <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
         <link rel="stylesheet" type="text/css" href="./css/style.css" />
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+                }
+            }
+        </script>
     </head>
     <body>
         <p class="numParticles"></p>
@@ -24,28 +32,36 @@
             <a href="./runtimeChanging.html">runtimeChanging</a>
         </div>
 
-        <script src="./js/three_r160/three.js"></script>
-        <script src="./js/Stats.min.js"></script>
-        <script src="../build/SPE.js"></script>
-        <script src="./js/basicScene.js"></script>
-        
+        <script type="module">
+            import * as THREE from "three";
+            import SPE from "../build/SPE.js";
+            import { BasicScene } from "./js/BasicScene.js";
+
+            window.THREE = THREE;
+            window.SPE = SPE;
+            window.BasicScene = BasicScene;
+
+            startExample();
+        </script>
 
         <script type="text/javascript">
-            // variables used in init()
-            let speScene = new BasicScene(75);
+            let speScene;
+            let emitter;
+            let particleGroup;
 
-            // Used in initParticles()
-            let emitter, particleGroup;
-
-            let allIn = function (loaded) {
-                initExample(loaded);
+            let startExample = function () {
+                // variables used in init()
+                speScene = new BasicScene(75);
+                // Used in initParticles()
+                let allIn = function (loaded) {
+                    initExample(loaded);
+                };
+                speScene.safeLoad(["./img/cloud.png"], allIn);
             };
-            speScene.safeLoad(["./img/cloud.png"], allIn);
 
             function initExample(textures) {
                 // Setup the scene
                 function init() {
-
                     speScene.renderer.setSize(window.innerWidth, window.innerHeight);
                     speScene.renderer.setClearColor(0x42c7ff);
 
