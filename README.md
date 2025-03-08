@@ -1,4 +1,4 @@
-Upgraded to THREE r174, examples are all modules in one page  
+March 8, `25:  Upgraded to THREE r174, examples are all modules in one page  
 
 Shader Particle Engine v1.0.6 ![](https://travis-ci.org/squarefeet/ShaderParticleEngine.svg?branch=master)
 =============================
