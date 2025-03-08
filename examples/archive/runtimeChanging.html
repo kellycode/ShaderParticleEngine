@@ -44,11 +44,7 @@
         </div>
 
         <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.js"></script> -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js
-
-
-
-        "></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"></script>
 
         <script type="module">
             import * as THREE from "three";
@@ -69,7 +65,7 @@
                 let allIn = function (loaded) {
                     initExample(loaded);
                 };
-                speScene.safeLoad(["./img/sprite-flame2.jpg"], allIn);
+                speScene.textureLoad(["./img/sprite-flame2.jpg"], allIn);
             };
 
             function initExample(textures) {

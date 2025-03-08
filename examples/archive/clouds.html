@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>SPE: Mouse follow</title>
+        <title>SPE: Clouds</title>
         <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
         <link rel="stylesheet" type="text/css" href="./css/style.css" />
         <script type="importmap">
@@ -20,11 +20,11 @@
             <a href="./activeMultiplier.html">activeMultiplier</a>
             <a href="./basic.html">basic</a>
             <a href="./clock.html">clock</a>
-            <a href="./clouds.html">clouds</a>
+            <a href="./clouds.html" style="color: lightgreen">clouds</a>
             <a href="./distributions.html">distributions</a>
             <a href="./explosion.html">explosion</a>
             <a href="./fog.html">fog</a>
-            <a href="./mouseFollow.html" style="color: lightgreen">mouseFollow</a>
+            <a href="./mouseFollow.html">mouseFollow</a>
             <a href="./multipleEmitters.html">multipleEmitters</a>
             <a href="./orbit.html">orbit</a>
             <a href="./pool.html">pool</a>
@@ -48,65 +48,67 @@
             let speScene;
             let emitter;
             let particleGroup;
-            let mouseX;
-            let mouseY;
-            let mouseVector;
 
             let startExample = function () {
                 // variables used in init()
                 speScene = new BasicScene(75);
-                // Mouse co-ords
-                mouseVector = new THREE.Vector3();
-
+                // Used in initParticles()
                 let allIn = function (loaded) {
                     initExample(loaded);
                 };
-                speScene.safeLoad(["./img/smokeparticle.png"], allIn);
+                speScene.textureLoad(["./img/cloud.png"], allIn);
             };
 
             function initExample(textures) {
                 // Setup the scene
                 function init() {
-                    speScene.camera.position.z = 50;
-                    speScene.camera.lookAt(speScene.scene.position);
-
                     speScene.renderer.setSize(window.innerWidth, window.innerHeight);
-                    speScene.renderer.setClearColor(0x000000);
+                    speScene.renderer.setClearColor(0x42c7ff);
+
+                    let color = new THREE.Color();
+                    speScene.scene.fog = new THREE.Fog(speScene.renderer.getClearColor(color), 20, 0);
                 }
 
                 // Create particle group and emitter
                 function initParticles() {
                     particleGroup = new SPE.Group({
                         texture: {
-                            value: textures["./img/smokeparticle.png"],
+                            value: textures["./img/cloud.png"],
                         },
                         maxParticleCount: 3000,
+                        blending: THREE.NormalBlending,
+                        fog: true,
                     });
 
                     emitter = new SPE.Emitter({
-                        maxAge: 3,
+                        particleCount: 750,
+                        maxAge: {
+                            value: 3,
+                        },
                         position: {
-                            value: new THREE.Vector3(0, 0, 0),
+                            value: new THREE.Vector3(0, -15, -50),
+                            spread: new THREE.Vector3(100, 30, 100),
                         },
-
-                        acceleration: {
-                            value: new THREE.Vector3(0, -5, 0),
-                            spread: new THREE.Vector3(5, 0, 5),
-                        },
-
                         velocity: {
-                            value: new THREE.Vector3(0, 10, 0),
+                            value: new THREE.Vector3(0, 0, 30),
                         },
-
-                        color: {
-                            value: [new THREE.Color(0.5, 0.5, 0.5), new THREE.Color()],
-                            spread: new THREE.Vector3(1, 1, 1),
+                        wiggle: {
+                            spread: 10,
                         },
                         size: {
-                            value: [5, 0],
+                            value: 75,
+                            spread: 50,
                         },
-
-                        particleCount: 1500,
+                        opacity: {
+                            value: [0, 1, 0],
+                        },
+                        color: {
+                            value: new THREE.Color(1, 1, 1),
+                            spread: new THREE.Color(0.1, 0.1, 0.1),
+                        },
+                        angle: {
+                            value: [0, Math.PI * 0.125],
+                        },
                     });
 
                     particleGroup.addEmitter(emitter);
@@ -117,9 +119,7 @@
 
                 function animate() {
                     requestAnimationFrame(animate);
-
-                    // Using a fixed time-step here to avoid pauses
-                    render(0.016);
+                    render(speScene.clock.getDelta());
                     speScene.stats.update();
                 }
 
@@ -127,26 +127,6 @@
                     particleGroup.tick(dt);
                     speScene.render();
                 }
-
-                // Add mousemove listener to move the `emitter`.
-                document.addEventListener(
-                    "mousemove",
-                    function (e) {
-                        mouseVector.set(
-                            (e.clientX / window.innerWidth) * 2 - 1,
-                            -(e.clientY / window.innerHeight) * 2 + 1,
-                            0.5
-                        );
-
-                        mouseVector.unproject(speScene.camera);
-                        emitter.position.value = emitter.position.value.set(
-                            mouseVector.x * speScene.camera.fov,
-                            mouseVector.y * speScene.camera.fov,
-                            0
-                        );
-                    },
-                    false
-                );
 
                 init();
                 initParticles();

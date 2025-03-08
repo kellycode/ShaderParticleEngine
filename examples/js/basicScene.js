@@ -5,21 +5,33 @@ export class BasicScene {
     constructor(fov) {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 0.1, 10000);
+        this.clock = new THREE.Clock();
 
+        // remove any previous renderer.domElement
+        this.renderCanvasCheck = document.getElementById("RENDER_CANVAS");
+        if(this.renderCanvasCheck){
+            this.renderCanvasCheck.remove();
+        }
         this.renderer = new THREE.WebGLRenderer({
             antialias: true,
         });
         this.renderer.onShaderError = this.shaderErrorLog;
         this.renderer.debug.checkShaderErrors = false;
-
-        this.stats = new Stats();
-        this.clock = new THREE.Clock();
-
+        this.renderer.domElement.id = "RENDER_CANVAS";
         document.body.appendChild(this.renderer.domElement);
-        document.body.appendChild(this.stats.domElement);
 
+
+        // remove any previous stats.domElement
+        this.statsCheck = document.getElementById("STATS_ELEM");
+        if(this.statsCheck) {
+            this.statsCheck.remove();
+        }
+        this.stats = new Stats();
         this.stats.domElement.style.position = "absolute";
         this.stats.domElement.style.top = "0";
+        this.stats.domElement.id = "STATS_ELEM";
+        document.body.appendChild(this.stats.domElement);
+
 
         window.addEventListener(
             "resize",
@@ -40,7 +52,7 @@ export class BasicScene {
         this.renderer.render(this.scene, this.camera);
     }
 
-    safeLoad(textureUrlArray, callback) {
+    textureLoad(textureUrlArray, callback) {
         const textureLoader = new THREE.TextureLoader();
         let loadedCount = 0;
         let loadedTextures = {};

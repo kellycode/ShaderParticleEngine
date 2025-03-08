@@ -1,7 +1,6 @@
 <html>
     <head>
-        <title>SPE: Clouds</title>
-        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+        <title>SPE: Distribution types</title>
         <link rel="stylesheet" type="text/css" href="./css/style.css" />
         <script type="importmap">
             {
@@ -13,20 +12,18 @@
         </script>
     </head>
     <body>
-        <p class="numParticles"></p>
-
         <div class="link_man">
             <h4>Examples</h4>
             <a href="./activeMultiplier.html">activeMultiplier</a>
             <a href="./basic.html">basic</a>
             <a href="./clock.html">clock</a>
-            <a href="./clouds.html" style="color: lightgreen">clouds</a>
+            <a href="./clouds.html">clouds</a>
             <a href="./distributions.html">distributions</a>
             <a href="./explosion.html">explosion</a>
             <a href="./fog.html">fog</a>
             <a href="./mouseFollow.html">mouseFollow</a>
             <a href="./multipleEmitters.html">multipleEmitters</a>
-            <a href="./orbit.html">orbit</a>
+            <a href="./orbit.html" style="color: lightgreen">orbit</a>
             <a href="./pool.html">pool</a>
             <a href="./rotation.html">rotation</a>
             <a href="./runtimeChanging.html">runtimeChanging</a>
@@ -46,79 +43,77 @@
 
         <script type="text/javascript">
             let speScene;
-            let emitter;
             let particleGroup;
-
             let startExample = function () {
                 // variables used in init()
                 speScene = new BasicScene(75);
-                // Used in initParticles()
                 let allIn = function (loaded) {
                     initExample(loaded);
                 };
-                speScene.safeLoad(["./img/cloud.png"], allIn);
+                speScene.textureLoad(["./img/smokeparticle.png"], allIn);
             };
 
             function initExample(textures) {
                 // Setup the scene
                 function init() {
-                    speScene.renderer.setSize(window.innerWidth, window.innerHeight);
-                    speScene.renderer.setClearColor(0x42c7ff);
+                    speScene.camera.position.z = 50;
+                    speScene.camera.lookAt(speScene.scene.position);
 
-                    let color = new THREE.Color();
-                    speScene.scene.fog = new THREE.Fog(speScene.renderer.getClearColor(color), 20, 0);
+                    speScene.renderer.setSize(window.innerWidth, window.innerHeight);
+                    speScene.renderer.setClearColor(0x000000);
                 }
 
                 // Create particle group and emitter
                 function initParticles() {
                     particleGroup = new SPE.Group({
                         texture: {
-                            value: textures["./img/cloud.png"],
+                            value: textures["./img/smokeparticle.png"],
                         },
                         maxParticleCount: 3000,
-                        blending: THREE.NormalBlending,
-                        fog: true,
                     });
 
-                    emitter = new SPE.Emitter({
-                        particleCount: 750,
+                    // General distributions.
+                    let emitter = new SPE.Emitter({
                         maxAge: {
-                            value: 3,
+                            value: 5,
                         },
                         position: {
-                            value: new THREE.Vector3(0, -15, -50),
-                            spread: new THREE.Vector3(100, 30, 100),
+                            value: new THREE.Vector3(5, -20, 0),
                         },
+
                         velocity: {
-                            value: new THREE.Vector3(0, 0, 30),
+                            value: new THREE.Vector3(0, 5, 0),
                         },
-                        wiggle: {
-                            spread: 10,
+
+                        acceleration: {
+                            spread: new THREE.Vector3(1, 0, 0),
                         },
-                        size: {
-                            value: 75,
-                            spread: 50,
-                        },
-                        opacity: {
-                            value: [0, 1, 0],
-                        },
+
                         color: {
-                            value: new THREE.Color(1, 1, 1),
-                            spread: new THREE.Color(0.1, 0.1, 0.1),
+                            value: [new THREE.Color("white"), new THREE.Color("red")],
                         },
-                        angle: {
-                            value: [0, Math.PI * 0.125],
+
+                        size: {
+                            value: 1,
                         },
+
+                        rotation: {
+                            axis: new THREE.Vector3(0, 1, 0),
+                            angle: Math.PI * 10,
+                            center: new THREE.Vector3(0, 0, 0),
+                        },
+                        particleCount: 1000,
+                        direction: -1,
                     });
 
                     particleGroup.addEmitter(emitter);
-                    speScene.scene.add(particleGroup.mesh);
 
-                    document.querySelector(".numParticles").textContent = "Total particles: " + emitter.particleCount;
+                    speScene.scene.add(particleGroup.mesh);
                 }
 
                 function animate() {
                     requestAnimationFrame(animate);
+
                     render(speScene.clock.getDelta());
                     speScene.stats.update();
                 }

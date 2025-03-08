@@ -1,7 +1,8 @@
 <html>
     <head>
-        <title>SPE: Distribution types</title>
+        <title>SPE: Basic</title>
         <link rel="stylesheet" type="text/css" href="./css/style.css" />
+
         <script type="importmap">
             {
                 "imports": {
@@ -12,10 +13,12 @@
         </script>
     </head>
     <body>
+        <p class="numParticles"></p>
+
         <div class="link_man">
             <h4>Examples</h4>
             <a href="./activeMultiplier.html">activeMultiplier</a>
-            <a href="./basic.html">basic</a>
+            <a href="./basic.html" style="color: lightgreen">basic</a>
             <a href="./clock.html">clock</a>
             <a href="./clouds.html">clouds</a>
             <a href="./distributions.html">distributions</a>
@@ -23,7 +26,7 @@
             <a href="./fog.html">fog</a>
             <a href="./mouseFollow.html">mouseFollow</a>
             <a href="./multipleEmitters.html">multipleEmitters</a>
-            <a href="./orbit.html" style="color: lightgreen">orbit</a>
+            <a href="./orbit.html">orbit</a>
             <a href="./pool.html">pool</a>
             <a href="./rotation.html">rotation</a>
             <a href="./runtimeChanging.html">runtimeChanging</a>
@@ -42,23 +45,21 @@
         </script>
 
         <script type="text/javascript">
+
             let speScene;
+            let emitter;
             let particleGroup;
             let startExample = function () {
-                // variables used in init()
                 speScene = new BasicScene(75);
                 let allIn = function (loaded) {
                     initExample(loaded);
                 };
-                speScene.safeLoad(["./img/smokeparticle.png"], allIn);
+                speScene.textureLoad(["./img/smokeparticle.png"], allIn);
             };
 
             function initExample(textures) {
                 // Setup the scene
                 function init() {
-                    speScene.camera.position.z = 50;
-                    speScene.camera.lookAt(speScene.scene.position);
-
                     speScene.renderer.setSize(window.innerWidth, window.innerHeight);
                     speScene.renderer.setClearColor(0x000000);
                 }
@@ -72,21 +73,23 @@
                         maxParticleCount: 3000,
                     });
 
-                    // General distributions.
-                    let emitter = new SPE.Emitter({
+                    emitter = new SPE.Emitter({
                         maxAge: {
-                            value: 5,
+                            value: 2,
                         },
                         position: {
-                            value: new THREE.Vector3(5, -20, 0),
-                        },
-
-                        velocity: {
-                            value: new THREE.Vector3(0, 5, 0),
+                            value: new THREE.Vector3(0, 0, -50),
+                            spread: new THREE.Vector3(0, 0, 0),
                         },
 
                         acceleration: {
-                            spread: new THREE.Vector3(1, 0, 0),
+                            value: new THREE.Vector3(0, -10, 0),
+                            spread: new THREE.Vector3(10, 0, 10),
+                        },
+
+                        velocity: {
+                            value: new THREE.Vector3(0, 25, 0),
+                            spread: new THREE.Vector3(10, 7.5, 10),
                         },
 
                         color: {
@@ -97,23 +100,17 @@
                             value: 1,
                         },
 
-                        rotation: {
-                            axis: new THREE.Vector3(0, 1, 0),
-                            angle: Math.PI * 10,
-                            center: new THREE.Vector3(0, 0, 0),
-                        },
-                        particleCount: 1000,
-                        direction: -1,
+                        particleCount: 2000,
                     });
 
                     particleGroup.addEmitter(emitter);
-
                     speScene.scene.add(particleGroup.mesh);
+
+                    document.querySelector(".numParticles").textContent = "Total particles: " + emitter.particleCount;
                 }
 
                 function animate() {
                     requestAnimationFrame(animate);
-
                     render(speScene.clock.getDelta());
                     speScene.stats.update();
                 }

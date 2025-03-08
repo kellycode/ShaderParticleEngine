@@ -8,6 +8,7 @@ body {
     font-family: sans-serif;
     overflow: hidden;
     margin: 0;
+    background-color: black;
 }
 
 p {
@@ -17,6 +18,14 @@ p {
 p.small {
     font-size: 0.8em;
 }
+
+#RENDER_CANVAS {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: -1;
+}
+
 
 .link_man {
     position: absolute;
@@ -34,34 +43,20 @@ p.small {
     padding-left: 6px;
 }
 
-.link_man a {
+.link_man span {
     display: block;
     margin: 6px;
-}
-
-a:link {
     color: lightblue; /* Default color for unvisited links */
     text-decoration: none; /* Remove underline */
+    cursor: pointer;
 }
 
-a:visited {
-    color: lightblue; /* Change visited links to blue */
-    text-decoration: none; /* Remove underline */
-}
-
-a:hover {
+.link_man span:hover {
     color: lightgreen; /* Change color on hover */
-    text-decoration: none; /* Remove underline */
 }
 
-a:focus {
-    color: yellow; /* Change color on focus */
-    text-decoration: none; /* Remove underline */
-}
-
-a:active {
-    color: lightgreen; /* Change color on click */
-    text-decoration: none; /* Remove underline */
+.link_man span.activeItem {
+    color: lightgreen; /* Change color on hover */
 }
 
 .numParticles {
@@ -70,6 +65,7 @@ a:active {
     left: 10px;
     color: white;
     text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+    display: none;
 }
 
 .alive-wrapper {
@@ -83,6 +79,7 @@ a:active {
     background-color: rgba(255, 255, 255, 0.15);
     border-radius: 1em;
     border: 1px solid rgba(255, 255, 255, 0.3);
+    display: none;
 }
 
 #stats {
@@ -90,3 +87,19 @@ a:active {
     top: 0;
     z-index: 2;
 }
+
+body.Fog .numParticles,
+body.Pool .numParticles,
+body.Basic .numParticles,
+body.Clouds .numParticles,
+body.MouseFollow .numParticles,
+body.ActiveMultiplier .numParticles,
+body.MultipleEmitters .numParticles  {
+    display: block;
+}
+
+body.Basic .alive-wrapper,
+body.ActiveMultiplier .alive-wrapper {
+    display: block;
+}
+
