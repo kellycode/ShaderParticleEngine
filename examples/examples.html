@@ -4,69 +4,75 @@
         <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
         <link rel="stylesheet" type="text/css" href="./css/style.css" />
 
+        <!-- for RuntimeChanging.js -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"></script>
-
-        <script>
-            let setStyle = function (elem) {
-                if (typeof elem === "string") {
-                    elem = document.getElementById(elem);
-                }
-                document.querySelectorAll(".spanLink").forEach((element) => {
-                    element.classList.remove("activeItem");
-                });
-                elem.classList.add("activeItem");
-                // to show the correct page elements
-                document.body.className = "";
-                document.body.classList.add(elem.id);
-            };
-            let initItem = function (module, elem) {
-                // clean up from RuntimeChanging
-                let datCheck = document.getElementById('DAT_GUI');
-                if(datCheck) {
-                    datCheck.remove();
-                }
-
-                module.init();
-                setStyle(elem);
-            };
-        </script>
 
         <script type="importmap">
             {
                 "imports": {
-                    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-                    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+                    "three": "https://cdn.jsdelivr.net/npm/three@0.174.0/build/three.module.js",
+                    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.174.0/examples/jsm/"
                 }
             }
         </script>
         <script type="module">
-            import { ActiveMultiplier } from "./ActiveMultiplier.js";
-            window.ActiveMultiplier = ActiveMultiplier;
-            import { Basic } from "./Basic.js";
-            window.Basic = Basic;
-            import { Clock } from "./Clock.js";
-            window.Clock = Clock;
-            import { Clouds } from "./Clouds.js";
-            window.Clouds = Clouds;
-            import { Distributions } from "./Distributions.js";
-            window.Distributions = Distributions;
-            import { Explosion } from "./Explosion.js";
-            window.Explosion = Explosion;
-            import { Fog } from "./Fog.js";
-            window.Fog = Fog;
-            import { MouseFollow } from "./MouseFollow.js";
-            window.MouseFollow = MouseFollow;
-            import { MultipleEmitters } from "./MultipleEmitters.js";
-            window.MultipleEmitters = MultipleEmitters;
-            import { Orbit } from "./Orbit.js";
-            window.Orbit = Orbit;
-            import { Pool } from "./Pool.js";
-            window.Pool = Pool;
-            import { Rotation } from "./Rotation.js";
-            window.Rotation = Rotation;
-            import { RuntimeChanging } from "./RuntimeChanging.js";
-            window.RuntimeChanging = RuntimeChanging;
+            let setStyle = function (elem) {
+                // accepts an html element or an ID string
+                if (typeof elem === "string") {
+                    elem = document.getElementById(elem);
+                }
+                // remove the existing active class for span (link) color
+                document.querySelectorAll(".spanLink").forEach((element) => {
+                    element.classList.remove("activeItem");
+                });
+                // add the class to the new active span
+                elem.classList.add("activeItem");
+                // for css to show the correct page elements
+                document.body.className = "";
+                document.body.classList.add(elem.id);
+            };
 
+            let modules = {};
+
+            import { ActiveMultiplier } from "./ActiveMultiplier.js";
+            modules["ActiveMultiplier"] = ActiveMultiplier;
+            import { Basic } from "./Basic.js";
+            modules["Basic"] = Basic;
+            import { Clock } from "./Clock.js";
+            modules["Clock"] = Clock;
+            import { Clouds } from "./Clouds.js";
+            modules["Clouds"] = Clouds;
+            import { Distributions } from "./Distributions.js";
+            modules["Distributions"] = Distributions;
+            import { Explosion } from "./Explosion.js";
+            modules["Explosion"] = Explosion;
+            import { Fog } from "./Fog.js";
+            modules["Fog"] = Fog;
+            import { MouseFollow } from "./MouseFollow.js";
+            modules["MouseFollow"] = MouseFollow;
+            import { MultipleEmitters } from "./MultipleEmitters.js";
+            modules["MultipleEmitters"] = MultipleEmitters;
+            import { Orbit } from "./Orbit.js";
+            modules["Orbit"] = Orbit;
+            import { Pool } from "./Pool.js";
+            modules["Pool"] = Pool;
+            import { Rotation } from "./Rotation.js";
+            modules["Rotation"] = Rotation;
+            import { RuntimeChanging } from "./RuntimeChanging.js";
+            modules["RuntimeChanging"] = RuntimeChanging;
+
+            // module name is sent as a string
+            window.initExample = function (module, elem) {
+                // clean up dat-gui from RuntimeChanging.js
+                let datCheck = document.getElementById("DAT_GUI");
+                if (datCheck) {
+                    datCheck.remove();
+                }
+                // start the chosen module
+                modules[module].init();
+                setStyle(elem);
+            };
+            // start one up on start
             ActiveMultiplier.init();
             setStyle("ActiveMultiplier");
         </script>
@@ -82,23 +88,25 @@
 
         <div class="link_man">
             <h4>Examples</h4>
-            <span id="ActiveMultiplier" class="spanLink" onclick="initItem(ActiveMultiplier, this);"
+            <span id="ActiveMultiplier" class="spanLink" onclick="initExample(ActiveMultiplier, this);"
                 >ActiveMultiplier</span
             >
-            <span id="Basic" class="spanLink" onclick="initItem(Basic, this)">Basic</span>
-            <span id="Clock" class="spanLink" onclick="initItem(Clock, this)">Clock</span>
-            <span id="Clouds" class="spanLink" onclick="initItem(Clouds, this)">Clouds</span>
-            <span id="Distributions" class="spanLink" onclick="initItem(Distributions, this)">Distributions</span>
-            <span id="Explosion" class="spanLink" onclick="initItem(Explosion, this)">Explosion</span>
-            <span id="Fog" class="spanLink" onclick="initItem(Fog, this)">Fog</span>
-            <span id="MouseFollow" class="spanLink" onclick="initItem(MouseFollow, this)">MouseFollow</span>
-            <span id="MultipleEmitters" class="spanLink" onclick="initItem(MultipleEmitters, this)"
+            <span id="Basic" class="spanLink" onclick="initExample('Basic', this)">Basic</span>
+            <span id="Clock" class="spanLink" onclick="initExample('Clock', this)">Clock</span>
+            <span id="Clouds" class="spanLink" onclick="initExample('Clouds', this)">Clouds</span>
+            <span id="Distributions" class="spanLink" onclick="initExample('Distributions', this)">Distributions</span>
+            <span id="Explosion" class="spanLink" onclick="initExample('Explosion', this)">Explosion</span>
+            <span id="Fog" class="spanLink" onclick="initExample('Fog', this)">Fog</span>
+            <span id="MouseFollow" class="spanLink" onclick="initExample('MouseFollow', this)">MouseFollow</span>
+            <span id="MultipleEmitters" class="spanLink" onclick="initExample('MultipleEmitters', this)"
                 >MultipleEmitters</span
             >
-            <span id="Orbit" class="spanLink" onclick="initItem(Orbit, this);">Orbit</span>
-            <span id="Pool" class="spanLink" onclick="initItem(Pool, this)">Pool</span>
-            <span id="Rotation" class="spanLink" onclick="initItem(Rotation, this)">Rotation</span>
-            <span id="RuntimeChanging" class="spanLink" onclick="initItem(RuntimeChanging, this)">RuntimeChanging</span>
+            <span id="Orbit" class="spanLink" onclick="initExample('Orbit', this);">Orbit</span>
+            <span id="Pool" class="spanLink" onclick="initExample('Pool', this)">Pool</span>
+            <span id="Rotation" class="spanLink" onclick="initExample('Rotation', this)">Rotation</span>
+            <span id="RuntimeChanging" class="spanLink" onclick="initExample('RuntimeChanging', this)"
+                >RuntimeChanging</span
+            >
         </div>
     </body>
 </html>
