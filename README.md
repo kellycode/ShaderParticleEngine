@@ -1,3 +1,5 @@
+Now at THREE r160  
+
 Shader Particle Engine v1.0.6 ![](https://travis-ci.org/squarefeet/ShaderParticleEngine.svg?branch=master)
 =============================
 
